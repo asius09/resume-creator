@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Resume Creator V1.0.0
+
+A high-fidelity, ATS-safe resume builder designed for beginners and professionals who need a clean, structured document.
+
+## Features
+
+- **Strict V1.0.0 Specification**: Follows an opinionated, professional layout structure.
+- **ATS Optimized**: Single-column layouts without icons or complex elements that confuse machine parsers.
+- **Triple Template Support**: Choose between Minimalist, Professional, and International formats.
+- **Live Preview**: Real-time visual feedback as you edit your content.
+- **ATS Plain Text Preview**: See exactly what the machine sees.
+- **Clean PDF Export**: Text-selectable, high-quality PDF generation.
+- **Auto-Cleaning**: Built-in logic to normalize bullet points and remove common "fluff".
+
+## Technology Stack
+
+- **Frontend**: Next.js 15+, TypeScript, Tailwind CSS
+- **State Management**: React Hooks + LocalStorage Persistence
+- **UI Components**: Custom @resume/ui package
+- **Icons**: Lucide React
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Run the development server:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+   ```bash
+   npm run dev
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+3. Build for production:
+   ```bash
+   npm run build
+   ```
 
-## Learn More
+## Development
 
-To learn more about Next.js, take a look at the following resources:
+The project is structured as a Monorepo using Turbo:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `apps/web`: The main Next.js application.
+- `packages/ui`: Shared layout components and UI elements.
+- `packages/types`: Shared TypeScript definitions.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Specification
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Refer to [SPEC.md](./SPEC.md) for the detailed V1.0.0 instruction contract.
