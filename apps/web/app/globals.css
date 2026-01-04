@@ -85,7 +85,7 @@ body {
 
   .resume-container {
     box-sizing: border-box !important;
-    padding: 1in !important; /* Internal document margins */
+    padding: 0.5in !important; /* Internal document margins */
     width: 210mm !important;
     height: 297mm !important;
     min-height: 297mm !important;

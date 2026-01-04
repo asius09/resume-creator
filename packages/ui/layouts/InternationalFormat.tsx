@@ -5,7 +5,7 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
   return (
     <div
       className="resume-container w-[210mm] min-h-[297mm] mx-auto bg-white font-serif leading-relaxed text-black shadow-none print:shadow-none"
-      style={{ padding: "1in" }}
+      style={{ padding: "0.5in" }}
     >
       {/* 1. NAME - TEXT_TYPE: NAME */}
       {data.blocks.map((block, idx) => {

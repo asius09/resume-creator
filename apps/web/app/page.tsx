@@ -139,16 +139,37 @@ export default function ResumeCleanerPage() {
     }
   };
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
+    if (typeof window === "undefined") return;
+
+    const element = document.getElementById("resume-preview");
+    if (!element) return;
+
+    const html2pdf = (await import("html2pdf.js")).default;
+
     const headerBlock = data.blocks.find((b) => b.type === "header");
     const fullName =
-      headerBlock?.type === "header" ? headerBlock.data.fullName : "Resume";
-    const originalTitle = document.title;
-    document.title = `${fullName} - Resume`;
-    window.print();
-    setTimeout(() => {
-      document.title = originalTitle;
-    }, 100);
+      headerBlock?.type === "header"
+        ? (headerBlock.data as { fullName: string }).fullName
+        : "Resume";
+
+    const opt = {
+      margin: 0,
+      filename: `${fullName.replace(/\s+/g, "_")}_Resume.pdf`,
+      image: { type: "jpeg" as const, quality: 0.98 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        letterRendering: true,
+      },
+      jsPDF: {
+        unit: "mm" as const,
+        format: "a4" as const,
+        orientation: "portrait" as const,
+      },
+    };
+
+    await html2pdf().set(opt).from(element).save();
   };
 
   const updateBlock = (index: number, newData: ResumeBlock["data"]) => {
