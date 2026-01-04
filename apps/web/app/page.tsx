@@ -1979,7 +1979,7 @@ export default function ResumeCleanerPage() {
               className={`transform scale-[0.75] md:scale-[0.8] lg:scale-[0.85] xl:scale-[0.9] 2xl:scale-[1] origin-top transition-all duration-500 h-fit mb-40 shadow-[0_0_80px_-15px_rgba(0,0,0,0.15)] ${previewMode === "plain" ? "bg-white p-12 w-[210mm] min-h-[297mm] shadow-none rounded-none text-left" : ""}`}
             >
               {previewMode === "plain" ? (
-                <pre className="whitespace-pre-wrap font-mono text-sm text-slate-700">
+                <pre className="whitespace-pre-wrap font-mono text-sm text-[#334155]">
                   {renderPlainText()}
                 </pre>
               ) : (

@@ -18,16 +18,16 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
               {/* 2. CONTACT LINE - TEXT_TYPE: META_TEXT */}
               <div className="text-[11px] font-normal flex flex-wrap gap-x-3 gap-y-1 text-left">
                 {block.data.location && (
-                  <span className="text-slate-700">{block.data.location}</span>
+                  <span className="text-[#334155]">{block.data.location}</span>
                 )}
                 {block.data.location && (
-                  <span className="text-slate-300">|</span>
+                  <span className="text-[#cbd5e1]">|</span>
                 )}
                 {block.data.contacts.map((contact: Contact, cIdx: number) => (
                   <React.Fragment key={cIdx}>
-                    <span className="text-slate-700">{contact.value}</span>
+                    <span className="text-[#334155]">{contact.value}</span>
                     {cIdx < block.data.contacts.length - 1 && (
-                      <span className="text-slate-300">|</span>
+                      <span className="text-[#cbd5e1]">|</span>
                     )}
                   </React.Fragment>
                 ))}
@@ -47,7 +47,7 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
               {/* 3. PROFESSIONAL SUMMARY (Optional) */}
               {block.type === "summary" && block.data && (
                 <div className="mb-6">
-                  <p className="text-[11px] leading-relaxed text-slate-700 italic border-l-2 border-slate-100 pl-4 py-1">
+                  <p className="text-[11px] leading-relaxed text-[#334155] italic border-l-2 border-[#f1f5f9] pl-4 py-1">
                     {block.data as string}
                   </p>
                 </div>
@@ -56,7 +56,7 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
               {/* 4. SKILLS - TEXT_TYPE: SECTION_HEADER */}
               {block.type === "skills" && (
                 <div className="mb-6">
-                  <h2 className="text-[12px] font-bold uppercase mb-2 border-b border-zinc-100 pb-0.5">
+                  <h2 className="text-[12px] font-bold uppercase mb-2 border-b border-[#f4f4f5] pb-0.5">
                     Skills
                   </h2>
                   <div className="space-y-1">
@@ -73,21 +73,21 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
               {/* 5. EXPERIENCE - TEXT_TYPE: SECTION_HEADER */}
               {block.type === "experience" && (
                 <div className="mb-6">
-                  <h2 className="text-[12px] font-bold uppercase mb-4 border-b-2 border-slate-100 pb-1 tracking-[0.05em]">
+                  <h2 className="text-[12px] font-bold uppercase mb-4 border-b-2 border-[#f1f5f9] pb-1 tracking-[0.05em]">
                     Experience
                   </h2>
                   <div className="space-y-6">
                     {block.data.map((item, iIdx) => (
                       <div key={iIdx}>
                         <div className="flex justify-between items-baseline mb-0.5">
-                          <span className="text-[11px] font-bold uppercase tracking-tight text-slate-900">
+                          <span className="text-[11px] font-bold uppercase tracking-tight text-[#0f172a]">
                             {item.jobTitle}
                           </span>
-                          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">
+                          <span className="text-[10px] font-black text-[#94a3b8] uppercase tracking-wider">
                             {item.startDate} — {item.endDate || "Present"}
                           </span>
                         </div>
-                        <div className="text-[10px] font-bold text-slate-600 italic mb-2">
+                        <div className="text-[10px] font-bold text-[#475569] italic mb-2">
                           {item.companyName}
                         </div>
                         <ul className="list-disc list-outside ml-4 text-[11px] space-y-1">
@@ -106,7 +106,7 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
               {/* 6. PROJECTS (Optional) */}
               {block.type === "projects" && (
                 <div className="mb-6">
-                  <h2 className="text-[12px] font-bold uppercase mb-4 border-b-2 border-slate-100 pb-1 tracking-[0.05em] text-slate-800">
+                  <h2 className="text-[12px] font-bold uppercase mb-4 border-b-2 border-[#f1f5f9] pb-1 tracking-[0.05em] text-[#1e293b]">
                     Projects
                   </h2>
                   <div className="space-y-4">
@@ -117,13 +117,13 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
                             {item.name}
                           </h3>
                           {item.link && (
-                            <span className="text-[10px] text-slate-500">
+                            <span className="text-[10px] text-[#64748b]">
                               {item.link}
                             </span>
                           )}
                         </div>
                         {item.description && (
-                          <p className="text-[10px] text-slate-600 mb-2 italic">
+                          <p className="text-[10px] text-[#475569] mb-2 italic">
                             {item.description}
                           </p>
                         )}
@@ -143,7 +143,7 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
               {/* 7. EDUCATION */}
               {block.type === "education" && (
                 <div className="mb-6">
-                  <h2 className="text-[12px] font-bold uppercase mb-4 border-b-2 border-slate-100 pb-1 tracking-[0.05em] text-slate-800">
+                  <h2 className="text-[12px] font-bold uppercase mb-4 border-b-2 border-[#f1f5f9] pb-1 tracking-[0.05em] text-[#1e293b]">
                     Education
                   </h2>
                   <div className="space-y-2">
@@ -171,7 +171,7 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
               {/* Certifications (Optional in V1 Spec) */}
               {block.type === "certifications" && (
                 <div className="mb-6">
-                  <h2 className="text-[12px] font-bold uppercase mb-2 border-b border-zinc-100 pb-0.5">
+                  <h2 className="text-[12px] font-bold uppercase mb-2 border-b border-[#f4f4f5] pb-0.5">
                     Certifications
                   </h2>
                   <div className="text-[11px]">
@@ -190,7 +190,7 @@ export const ATSMinimalist = ({ data }: { data: ResumeData }) => {
 
               {/* Custom Block */}
               {block.type === "custom" && (
-                <div className="mb-6 border-l-2 border-zinc-100 pl-4 py-1">
+                <div className="mb-6 border-l-2 border-[#f4f4f5] pl-4 py-1">
                   <h2 className="text-[12px] font-bold uppercase mb-2">
                     {block.data.title}
                   </h2>

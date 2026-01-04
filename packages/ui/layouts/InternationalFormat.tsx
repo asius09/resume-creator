@@ -13,13 +13,13 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
           return (
             <div
               key={idx}
-              className="mb-10 text-left border-b-2 border-slate-900 pb-5"
+              className="mb-10 text-left border-b-2 border-[#0f172a] pb-5"
             >
               <h1 className="text-3xl font-normal mb-2 tracking-widest uppercase">
                 {block.data.fullName}
               </h1>
               {/* 2. CONTACT INFORMATION - TEXT_TYPE: META_TEXT */}
-              <div className="text-[13px] flex flex-col gap-1 font-medium text-slate-800">
+              <div className="text-[13px] flex flex-col gap-1 font-medium text-[#1e293b]">
                 {block.data.location && <span>{block.data.location}</span>}
                 {block.data.contacts.map((contact: Contact, cIdx: number) => (
                   <span key={cIdx} className="flex items-center gap-2">
@@ -45,10 +45,10 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
               {/* 3. PROFESSIONAL SUMMARY - Strongly recommended */}
               {block.type === "summary" && block.data && (
                 <div className="mb-8">
-                  <h2 className="text-[16px] font-bold border-b-2 border-slate-900 pb-1 mb-4 uppercase tracking-wider">
+                  <h2 className="text-[16px] font-bold border-b-2 border-[#0f172a] pb-1 mb-4 uppercase tracking-wider">
                     Professional Profile
                   </h2>
-                  <p className="text-[13px] text-justify leading-relaxed text-slate-900 italic">
+                  <p className="text-[13px] text-justify leading-relaxed text-[#0f172a] italic">
                     {block.data as string}
                   </p>
                 </div>
@@ -57,7 +57,7 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
               {/* 4. CORE SKILLS - Optimized for ATS keywords */}
               {block.type === "skills" && (
                 <div className="mb-8">
-                  <h2 className="text-[16px] font-bold border-b-2 border-slate-900 pb-1 mb-4 uppercase tracking-wider">
+                  <h2 className="text-[16px] font-bold border-b-2 border-[#0f172a] pb-1 mb-4 uppercase tracking-wider">
                     Core Skills
                   </h2>
                   <div className="space-y-3">
@@ -69,7 +69,7 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
                         <span className="font-bold text-black uppercase text-[11px] tracking-wide pt-0.5">
                           {item.category}
                         </span>
-                        <span className="text-slate-900 font-medium leading-relaxed">
+                        <span className="text-[#0f172a] font-medium leading-relaxed">
                           {item.skills.join(", ")}
                         </span>
                       </div>
@@ -81,7 +81,7 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
               {/* 5. PROFESSIONAL EXPERIENCE */}
               {block.type === "experience" && (
                 <div className="mb-8">
-                  <h2 className="text-[16px] font-bold border-b-2 border-slate-900 pb-1 mb-5 uppercase tracking-wider">
+                  <h2 className="text-[16px] font-bold border-b-2 border-[#0f172a] pb-1 mb-5 uppercase tracking-wider">
                     Professional Experience
                   </h2>
                   <div className="space-y-8">
@@ -89,7 +89,7 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
                       <div key={iIdx}>
                         <div className="flex justify-between font-bold text-[14px] mb-1">
                           <span className="uppercase">{item.jobTitle}</span>
-                          <span className="text-[12px] font-bold text-slate-600 uppercase">
+                          <span className="text-[12px] font-bold text-[#475569] uppercase">
                             {item.startDate.toUpperCase()} —{" "}
                             {item.isCurrent
                               ? "PRESENT"
@@ -97,16 +97,16 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
                           </span>
                         </div>
                         <div className="flex justify-between items-center text-[13px] mb-3">
-                          <span className="font-bold italic text-slate-800">
+                          <span className="font-bold italic text-[#1e293b]">
                             {item.companyName}
                           </span>
                           {item.location && (
-                            <span className="text-slate-500 font-medium italic">
+                            <span className="text-[#64748b] font-medium italic">
                               {item.location}
                             </span>
                           )}
                         </div>
-                        <ul className="list-disc list-outside ml-6 text-[13px] text-slate-900 space-y-2">
+                        <ul className="list-disc list-outside ml-6 text-[13px] text-[#0f172a] space-y-2">
                           {item.bullets.map((bullet, bIdx) => (
                             <li key={bIdx} className="pl-1 leading-relaxed">
                               {bullet}
@@ -122,7 +122,7 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
               {/* 6. EDUCATION */}
               {block.type === "education" && (
                 <div className="mb-8">
-                  <h2 className="text-[16px] font-bold border-b-2 border-slate-900 pb-1 mb-5 uppercase tracking-wider">
+                  <h2 className="text-[16px] font-bold border-b-2 border-[#0f172a] pb-1 mb-5 uppercase tracking-wider">
                     Education
                   </h2>
                   <div className="space-y-6">
@@ -135,16 +135,16 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
                           <div className="font-bold uppercase tracking-tight">
                             {item.institution}
                           </div>
-                          <div className="text-slate-800 italic text-[13px] mt-1">
+                          <div className="text-[#1e293b] italic text-[13px] mt-1">
                             {item.degree}
                           </div>
                           {item.gpa && (
-                            <div className="text-[11px] font-bold text-slate-500 mt-1">
+                            <div className="text-[11px] font-bold text-[#64748b] mt-1">
                               Grade: {item.gpa}
                             </div>
                           )}
                         </div>
-                        <span className="font-bold text-[12px] text-slate-700">
+                        <span className="font-bold text-[12px] text-[#334155]">
                           {item.graduationYear}
                         </span>
                       </div>
@@ -156,19 +156,19 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
               {/* 7. ADDITIONAL INFORMATION (Optional / Certs) */}
               {block.type === "certifications" && (
                 <div className="mb-8">
-                  <h2 className="text-[16px] font-bold border-b border-zinc-300 pb-1 mb-4 uppercase tracking-wider">
+                  <h2 className="text-[16px] font-bold border-b border-[#d4d4d8] pb-1 mb-4 uppercase tracking-wider">
                     Certifications & Training
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-4 text-[13px]">
                     {block.data.map((item, iIdx) => (
                       <div
                         key={iIdx}
-                        className="border-l border-zinc-200 pl-4 py-1"
+                        className="border-l border-[#e4e4e7] pl-4 py-1"
                       >
                         <div className="font-bold uppercase mb-1">
                           {item.name}
                         </div>
-                        <div className="text-slate-600 text-[11px] uppercase tracking-wide">
+                        <div className="text-[#475569] text-[11px] uppercase tracking-wide">
                           {item.issuer} • {item.year}
                         </div>
                       </div>
@@ -179,7 +179,7 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
 
               {block.type === "projects" && (
                 <div className="mb-8">
-                  <h2 className="text-[16px] font-bold border-b border-zinc-300 pb-1 mb-4 uppercase tracking-wider">
+                  <h2 className="text-[16px] font-bold border-b border-[#d4d4d8] pb-1 mb-4 uppercase tracking-wider">
                     Key Projects
                   </h2>
                   <div className="space-y-6">
@@ -188,17 +188,17 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
                         <div className="flex justify-between font-bold text-[14px] mb-1 uppercase">
                           <span>{item.name}</span>
                           {item.link && (
-                            <span className="font-normal text-[11px] text-slate-500 normal-case">
+                            <span className="font-normal text-[11px] text-[#64748b] normal-case">
                               {item.link}
                             </span>
                           )}
                         </div>
                         {item.description && (
-                          <p className="text-[12px] mb-2 font-bold italic text-slate-700">
+                          <p className="text-[12px] mb-2 font-bold italic text-[#334155]">
                             {item.description}
                           </p>
                         )}
-                        <ul className="list-disc list-outside ml-6 text-[13px] text-slate-900 space-y-2">
+                        <ul className="list-disc list-outside ml-6 text-[13px] text-[#0f172a] space-y-2">
                           {item.bullets.map((bullet, bIdx) => (
                             <li key={bIdx} className="pl-1">
                               {bullet}
@@ -213,10 +213,10 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
 
               {block.type === "custom" && (
                 <div className="mb-8 pb-4">
-                  <h2 className="text-[16px] font-bold border-b border-zinc-300 pb-1 mb-3 uppercase tracking-wider">
+                  <h2 className="text-[16px] font-bold border-b border-[#d4d4d8] pb-1 mb-3 uppercase tracking-wider">
                     {block.data.title}
                   </h2>
-                  <div className="text-[13px] whitespace-pre-wrap leading-relaxed italic text-slate-800">
+                  <div className="text-[13px] whitespace-pre-wrap leading-relaxed italic text-[#1e293b]">
                     {block.data.content}
                   </div>
                 </div>
