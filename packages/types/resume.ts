@@ -50,9 +50,23 @@ export const CertificationItemSchema = z.object({
   year: z.string().min(1),
 });
 
+export const PersonalDetailsSchema = z.object({
+  fullName: z.string().min(1),
+  fatherName: z.string().optional(),
+  dateOfBirth: z.string().optional(),
+  gender: z.string().optional(),
+  maritalStatus: z.string().optional(),
+  nationality: z.string().default('Indian'),
+});
+
 export const CustomBlockSchema = z.object({
   title: z.string().min(1),
-  content: z.string().min(1), // Markdown or plain text
+  content: z.string(),
+});
+
+export const LanguageItemSchema = z.object({
+  language: z.string().min(1),
+  proficiency: z.string().min(1), // Native, Intermediate, etc.
 });
 
 export const ResumeSectionTypeSchema = z.enum([
@@ -63,6 +77,8 @@ export const ResumeSectionTypeSchema = z.enum([
   'skills',
   'education',
   'certifications',
+  'languages',
+  'personal',
   'custom',
 ]);
 
@@ -70,12 +86,14 @@ export type ResumeSectionType = z.infer<typeof ResumeSectionTypeSchema>;
 
 export const ResumeBlockSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('header'), data: HeaderSchema }),
-  z.object({ type: z.literal('summary'), data: z.string().max(500) }),
+  z.object({ type: z.literal('summary'), data: z.string().max(1000) }),
   z.object({ type: z.literal('experience'), data: z.array(ExperienceItemSchema) }),
   z.object({ type: z.literal('projects'), data: z.array(ProjectItemSchema) }),
   z.object({ type: z.literal('skills'), data: z.array(SkillGroupSchema) }),
   z.object({ type: z.literal('education'), data: z.array(EducationItemSchema) }),
   z.object({ type: z.literal('certifications'), data: z.array(CertificationItemSchema) }),
+  z.object({ type: z.literal('languages'), data: z.array(LanguageItemSchema) }),
+  z.object({ type: z.literal('personal'), data: PersonalDetailsSchema }),
   z.object({ type: z.literal('custom'), data: CustomBlockSchema }),
 ]);
 

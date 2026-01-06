@@ -1,220 +1,295 @@
 import React from "react";
-import type { ResumeData, Contact } from "@resume/types";
+import type {
+  ResumeData,
+  Contact,
+  ExperienceItem,
+  SkillGroup,
+  EducationItem,
+  ProjectItem,
+} from "@resume/types";
+
+function formatContactLink(contact: Contact): string {
+  switch (contact.type) {
+    case "email":
+      return `mailto:${contact.value}`;
+    case "phone":
+      return `tel:${contact.value.replace(/\s+/g, "")}`;
+    case "linkedin":
+    case "github":
+    case "website":
+      return contact.value.startsWith("http")
+        ? contact.value
+        : `https://${contact.value}`;
+    default:
+      return contact.value;
+  }
+}
 
 export const ModernProfessional = ({ data }: { data: ResumeData }) => {
+  const headerBlock = data.blocks.find((b) => b.type === "header");
+  const summaryBlock = data.blocks.find((b) => b.type === "summary");
+  const experienceBlock = data.blocks.find((b) => b.type === "experience");
+  const skillsBlock = data.blocks.find((b) => b.type === "skills");
+  const educationBlock = data.blocks.find((b) => b.type === "education");
+  const languagesBlock = data.blocks.find((b) => b.type === "languages");
+  const personalBlock = data.blocks.find((b) => b.type === "personal");
+
+  // Additional sections
+  const projectsBlock = data.blocks.find((b) => b.type === "projects");
+  const certsBlock = data.blocks.find((b) => b.type === "certifications");
+  const customBlocks = data.blocks.filter((b) => b.type === "custom");
+
   return (
     <div
-      className="resume-container w-[210mm] min-h-[297mm] mx-auto bg-white font-sans leading-relaxed text-[#0f172a] shadow-none print:shadow-none"
-      style={{ padding: "0.5in" }}
+      className="resume-container w-[210mm] min-h-[297mm] mx-auto bg-white text-[#111]"
+      style={{
+        padding: "20mm",
+        fontFamily: "var(--font-inter), 'Helvetica', Arial, sans-serif",
+      }}
     >
-      {/* 1. NAME - TEXT_TYPE: NAME */}
-      {data.blocks.map((block, idx) => {
-        if (block.type === "header") {
-          return (
-            <div key={idx} className="mb-10 text-left">
-              <h1 className="text-3xl font-bold uppercase tracking-tight mb-2">
-                {block.data.fullName}
-              </h1>
-              {/* 2. CONTACT BLOCK - TEXT_TYPE: META_TEXT */}
-              <div className="text-[12px] flex flex-wrap font-normal text-[#334155]">
-                {block.data.location && (
-                  <span className="mr-5 mb-2">{block.data.location}</span>
+      {/* 1. Header */}
+      {headerBlock && headerBlock.type === "header" && (
+        <div className="mb-8 border-b-2 border-[#111] pb-6">
+          <h1 className="text-[26px] font-bold uppercase tracking-tight mb-2">
+            {headerBlock.data.fullName}
+          </h1>
+          <div className="text-[14px] font-medium text-[#444]">
+            {headerBlock.data.location && (
+              <>
+                <span>{headerBlock.data.location}</span>
+                {(headerBlock.data.contacts as Contact[]).length > 0 && (
+                  <span> • </span>
                 )}
-                {block.data.contacts.map((contact: Contact, cIdx: number) => (
-                  <span key={cIdx} className="flex items-center mr-5 mb-2">
-                    {cIdx > 0 && <span className="text-[#cbd5e1] mr-2">•</span>}
-                    {contact.value}
-                  </span>
-                ))}
-              </div>
-            </div>
-          );
-        }
-        return null;
-      })}
+              </>
+            )}
+            {(headerBlock.data.contacts as Contact[]).map((c, i) => (
+              <React.Fragment key={i}>
+                <a
+                  href={formatContactLink(c)}
+                  className="hover:underline text-inherit no-underline"
+                >
+                  {c.value}
+                </a>
+                {i < (headerBlock.data.contacts as Contact[]).length - 1 && (
+                  <span> • </span>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      )}
 
-      {/* 3. PROFESSIONAL SUMMARY - REQUIRED if experience > 5 years */}
-      {data.blocks.map((block, idx) => {
-        if (block.type === "summary") {
-          return (
-            <div key={idx} className="mb-8">
-              <h2 className="text-[14px] font-bold uppercase border-b-2 border-[#0f172a] pb-1 mb-4 tracking-wider">
-                Professional Summary
-              </h2>
-              <p className="text-[12px] leading-relaxed text-justify text-[#334155]">
-                {block.data as string}
-              </p>
-            </div>
-          );
-        }
-        return null;
-      })}
+      {/* 2. Summary */}
+      {summaryBlock && summaryBlock.type === "summary" && summaryBlock.data && (
+        <div className="mb-8">
+          <h2 className="text-[16px] font-bold uppercase mb-3 tracking-wider">
+            Professional Summary
+          </h2>
+          <p className="text-[14px] leading-relaxed text-[#111]">
+            {summaryBlock.data as string}
+          </p>
+        </div>
+      )}
 
-      {/* 4. EXPERIENCE - TEXT_TYPE: SECTION_HEADER */}
-      {data.blocks.map((block, idx) => {
-        if (block.type === "experience") {
-          return (
-            <div key={idx} className="mb-10">
-              <h2 className="text-[14px] font-bold uppercase border-b-2 border-[#0f172a] pb-1 mb-6 tracking-wider">
-                Experience
-              </h2>
-              <div className="space-y-6">
-                {block.data.map((item, iIdx) => (
-                  <div key={iIdx}>
-                    <div className="flex justify-between items-baseline mb-1">
-                      <h3 className="font-bold text-[13px] text-[#0f172a]">
-                        {item.jobTitle}
-                      </h3>
-                      <span className="text-[11px] font-bold uppercase text-[#64748b]">
-                        {item.startDate} —{" "}
-                        {item.isCurrent ? "Present" : item.endDate}
-                      </span>
-                    </div>
-                    <div className="text-[12px] font-bold text-[#334155] mb-2">
-                      {item.companyName}
-                      {item.location && `, ${item.location}`}
-                    </div>
-                    <ul className="list-disc list-outside ml-5 text-[12px] text-[#334155] space-y-1.5">
-                      {item.bullets.map((bullet, bIdx) => (
-                        <li key={bIdx} className="pl-1">
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
+      {/* 3. Experience */}
+      {experienceBlock && experienceBlock.type === "experience" && (
+        <div className="mb-8">
+          <h2 className="text-[16px] font-bold uppercase border-b border-[#ddd] mb-5 pb-1 tracking-wider">
+            Professional Experience
+          </h2>
+          <div className="space-y-6">
+            {(experienceBlock.data as ExperienceItem[]).map((item, idx) => (
+              <div key={idx}>
+                <div className="flex justify-between items-baseline mb-1">
+                  <div className="text-[15px] font-bold text-[#000]">
+                    {item.companyName}
                   </div>
-                ))}
-              </div>
-            </div>
-          );
-        }
-        return null;
-      })}
-
-      {/* 5. SKILLS - TEXT_TYPE: SECTION_HEADER */}
-      {data.blocks.map((block, idx) => {
-        if (block.type === "skills") {
-          return (
-            <div key={idx} className="mb-10">
-              <h2 className="text-[14px] font-bold uppercase border-b-2 border-[#0f172a] pb-1 mb-5 tracking-wider">
-                Skills
-              </h2>
-              <div className="grid grid-cols-1 gap-2">
-                {block.data.map((item, iIdx) => (
-                  <div key={iIdx} className="text-[12px]">
-                    <span className="font-bold text-[#1e293b] uppercase text-[11px] tracking-wide mr-2">
-                      {item.category}:
-                    </span>
-                    <span className="text-[#334155]">
-                      {item.skills.join(", ")}
-                    </span>
+                  <div className="text-[14px] font-bold text-[#444]">
+                    {item.startDate} – {item.endDate || "Present"}
                   </div>
-                ))}
+                </div>
+                <div className="text-[14px] font-bold italic mb-2 text-[#222]">
+                  {item.jobTitle}
+                </div>
+                <ul className="list-disc list-outside ml-5 text-[14px] space-y-2 text-[#111]">
+                  {item.bullets.map((bullet, bIdx) => (
+                    <li key={bIdx} className="pl-1 leading-normal">
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-          );
-        }
-        return null;
-      })}
+            ))}
+          </div>
+        </div>
+      )}
 
-      {/* 6. EDUCATION */}
-      {data.blocks.map((block, idx) => {
-        if (block.type === "education") {
-          return (
-            <div key={idx} className="mb-10">
-              <h2 className="text-[14px] font-bold uppercase border-b-2 border-[#0f172a] pb-1 mb-5 tracking-wider">
-                Education
-              </h2>
-              <div className="space-y-4">
-                {block.data.map((item, iIdx) => (
-                  <div key={iIdx} className="flex justify-between text-[12px]">
-                    <div>
-                      <div className="font-bold text-[#0f172a] uppercase">
-                        {item.degree}
-                      </div>
-                      <div className="text-[#334155] italic">
-                        {item.institution}
-                      </div>
-                    </div>
-                    <span className="font-bold text-[#64748b]">
-                      {item.graduationYear}
-                    </span>
+      {/* 4. Skills */}
+      {skillsBlock && skillsBlock.type === "skills" && (
+        <div className="mb-8">
+          <h2 className="text-[16px] font-bold uppercase border-b border-[#ddd] mb-4 pb-1 tracking-wider">
+            Technical Skills & Tools
+          </h2>
+          <div className="space-y-2">
+            {(skillsBlock.data as SkillGroup[]).map((item, idx) => (
+              <div key={idx} className="text-[14px] leading-normal">
+                <span className="font-bold">{item.category}:</span>{" "}
+                {item.skills.join(", ")}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 5. Education */}
+      {educationBlock && educationBlock.type === "education" && (
+        <div className="mb-8">
+          <h2 className="text-[16px] font-bold uppercase border-b border-[#ddd] mb-4 pb-1 tracking-wider">
+            Education
+          </h2>
+          <div className="space-y-4">
+            {(educationBlock.data as EducationItem[]).map((item, idx) => (
+              <div
+                key={idx}
+                className="flex justify-between items-baseline text-[14px]"
+              >
+                <div>
+                  <div className="font-bold">{item.institution}</div>
+                  <div className="italic">
+                    {item.degree} {item.gpa && `(GPA: ${item.gpa})`}
                   </div>
-                ))}
+                </div>
+                <div className="font-bold text-[#444]">
+                  {item.graduationYear}
+                </div>
               </div>
-            </div>
-          );
-        }
-        return null;
-      })}
+            ))}
+          </div>
+        </div>
+      )}
 
-      {/* 7. CERTIFICATIONS (Optional) */}
-      {data.blocks.map((block, idx) => {
-        if (block.type === "certifications") {
-          return (
-            <div key={idx} className="mb-8">
-              <h2 className="text-[14px] font-bold uppercase border-b-2 border-[#0f172a] pb-1 mb-4 tracking-wider">
-                Certifications
-              </h2>
-              <ul className="list-disc list-outside ml-5 text-[12px] text-[#334155] space-y-1">
-                {block.data.map((item, iIdx) => (
-                  <li key={iIdx} className="pl-1">
-                    <span className="font-bold">{item.name}</span> —{" "}
-                    {item.issuer} ({item.year})
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        }
-        return null;
-      })}
+      {/* 6. Languages */}
+      {languagesBlock && languagesBlock.type === "languages" && (
+        <div className="mb-8">
+          <h2 className="text-[16px] font-bold uppercase border-b border-[#ddd] mb-4 pb-1 tracking-wider">
+            Languages
+          </h2>
+          <div className="text-[14px] flex flex-wrap gap-x-8">
+            {(languagesBlock.data as any[]).map((item, idx) => (
+              <div key={idx}>
+                <span className="font-bold">{item.language}:</span>{" "}
+                {item.proficiency}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-      {/* Projects and Custom as extra V1 sections */}
-      {data.blocks.map((block, idx) => {
-        if (block.type === "projects") {
-          return (
-            <div key={idx} className="mb-8">
-              <h2 className="text-[14px] font-bold uppercase border-b-2 border-[#0f172a] pb-1 mb-4 tracking-wider">
-                Projects
-              </h2>
-              <div className="space-y-4">
-                {block.data.map((item, iIdx) => (
-                  <div key={iIdx}>
-                    <h3 className="font-bold text-[13px] text-[#0f172a] mb-1">
-                      {item.name}
-                    </h3>
-                    {item.description && (
-                      <p className="text-[11px] text-[#475569] mb-2">
-                        {item.description}
-                      </p>
+      {/* 7. Personal Information */}
+      {personalBlock && personalBlock.type === "personal" && (
+        <div className="mb-8">
+          <h2 className="text-[16px] font-bold uppercase border-b border-[#ddd] mb-4 pb-1 tracking-wider">
+            Personal Information
+          </h2>
+          <div className="grid grid-cols-2 gap-y-2 text-[14px]">
+            <div>
+              <span className="font-bold">Date of Birth:</span>{" "}
+              {personalBlock.data.dateOfBirth}
+            </div>
+            <div>
+              <span className="font-bold">Gender:</span>{" "}
+              {personalBlock.data.gender}
+            </div>
+            <div>
+              <span className="font-bold">Father's Name:</span>{" "}
+              {personalBlock.data.fatherName}
+            </div>
+            <div>
+              <span className="font-bold">Marital Status:</span>{" "}
+              {personalBlock.data.maritalStatus}
+            </div>
+            <div>
+              <span className="font-bold">Nationality:</span>{" "}
+              {personalBlock.data.nationality}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 8. Projects */}
+      {projectsBlock && projectsBlock.type === "projects" && (
+        <div className="mb-8">
+          <h2 className="text-[16px] font-bold uppercase border-b border-[#ddd] mb-5 pb-1 tracking-wider">
+            Key Projects
+          </h2>
+          <div className="space-y-6">
+            {(projectsBlock.data as ProjectItem[]).map((item, idx) => (
+              <div key={idx}>
+                <div className="flex justify-between items-baseline mb-1">
+                  <div className="text-[15px] font-bold uppercase text-black">
+                    {item.link ? (
+                      <a
+                        href={item.link}
+                        className="hover:underline text-inherit no-underline"
+                      >
+                        {item.name}
+                      </a>
+                    ) : (
+                      item.name
                     )}
-                    <ul className="list-disc list-outside ml-5 text-[12px] text-[#334155] space-y-1">
-                      {item.bullets.map((bullet, bIdx) => (
-                        <li key={bIdx} className="pl-1">
-                          {bullet}
-                        </li>
-                      ))}
-                    </ul>
                   </div>
-                ))}
+                  {item.dates && (
+                    <div className="text-[14px] font-bold text-[#444]">
+                      {item.dates}
+                    </div>
+                  )}
+                </div>
+                {item.description && (
+                  <p className="text-[14px] mb-2 italic text-[#334155] leading-relaxed">
+                    {item.description}
+                  </p>
+                )}
+                <ul className="list-disc list-outside ml-5 text-[14px] space-y-1.5 text-[#111]">
+                  {item.bullets.map((bullet, bIdx) => (
+                    <li key={bIdx} className="pl-1 leading-normal">
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
-          );
-        }
-        if (block.type === "custom") {
-          return (
-            <div key={idx} className="mb-8">
-              <h2 className="text-[14px] font-bold uppercase border-b-2 border-[#0f172a] pb-1 mb-4 tracking-wider">
-                {block.data.title}
-              </h2>
-              <div className="text-[12px] whitespace-pre-wrap text-[#334155] leading-relaxed">
-                {block.data.content}
-              </div>
-            </div>
-          );
-        }
-        return null;
-      })}
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* 9. Certifications */}
+      {certsBlock && certsBlock.type === "certifications" && (
+        <div className="mb-8">
+          <h2 className="text-[16px] font-bold uppercase border-b border-[#ddd] mb-4 pb-1 tracking-wider">
+            Certifications
+          </h2>
+          <ul className="list-disc list-outside ml-5 text-[14px] space-y-1.5 text-[#111]">
+            {(certsBlock.data as any[]).map((item, idx) => (
+              <li key={idx} className="pl-1 leading-normal">
+                <span className="font-bold">{item.name}</span> — {item.issuer} (
+                {item.year})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 10. Custom Sections */}
+      {customBlocks.map((block, idx) => (
+        <div key={idx} className="mb-8">
+          <h2 className="text-[16px] font-bold uppercase border-b border-[#ddd] mb-4 pb-1 tracking-wider">
+            {(block.data as any).title}
+          </h2>
+          <div className="text-[14px] whitespace-pre-wrap leading-relaxed">
+            {(block.data as any).content}
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

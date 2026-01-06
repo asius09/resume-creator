@@ -37,62 +37,109 @@ const INITIAL_DATA: ResumeData = {
   version: 1,
   metadata: {
     theme: "minimalist",
-    region: "US",
+    region: "IN",
     lastModified: new Date().toISOString(),
   },
   blocks: [
     {
       type: "header",
       data: {
-        fullName: "New Candidate",
-        location: "City, Country",
+        fullName: "Adiba Firoz",
+        location: "Karol Bagh, Delhi, India",
         contacts: [
-          { type: "email", value: "email@example.com" },
-          { type: "phone", value: "+1 000 000 0000" },
-          { type: "linkedin", value: "linkedin.com/in/username" },
+          { type: "phone", value: "+91 95825 76055" },
+          { type: "email", value: "adibafiroz2001@gmail.com" },
+          {
+            type: "linkedin",
+            value: "linkedin.com/in/adiba-firoz-641984258/",
+          },
         ],
       },
-    },
+    } as any,
     {
       type: "summary",
-      data: "Optional Professional Summary. Role + years of experience + key value proposition. (2-3 lines)",
-    },
+      data: "Patient-focused Front Office Executive with over a year of experience in high-volume medical environments at BLK-Max Super Speciality Hospital. Expert in managing patient billing, insurance verification, and coordinating complex clinical flow. Dedicated to providing calm, professional, and efficient front-desk assistance while ensuring accurate records management and exceptional patient care.",
+    } as any,
     {
       type: "experience",
       data: [
         {
-          jobTitle: "Your Role",
-          companyName: "Company Name",
-          startDate: "Jan 20XX",
+          jobTitle: "Front Office Executive",
+          companyName: "BLK-Max Super Speciality Hospital",
+          location: "Delhi, India",
+          startDate: "Jan 2024",
           endDate: "Present",
           isCurrent: true,
           bullets: [
-            "Start with an action verb (e.g. Led, Optimized, Built)",
-            "Quantify impact with numbers where possible",
-            "Focus on outcomes, not just responsibilities",
+            "Manage patient billing, payment processing, and basic insurance checks including verification of government bills.",
+            "Guide patients at the front desk with registration, appointments, and general inquiries.",
+            "Coordinate with clinical and support teams to ensure smooth and timely patient flow.",
+            "Maintain accurate patient records and provide clear information to patients and their families.",
+            "Ensure a polite and calm front desk experience during high-volume busy hours.",
+            "Handle incoming calls and support faster overall service delivery.",
           ],
         },
       ],
-    },
+    } as any,
     {
       type: "skills",
       data: [
         {
-          category: "Technical Skills",
-          skills: ["Example Skill 1", "Example Skill 2"],
+          category: "Professional Skills",
+          skills: [
+            "Patient Reception",
+            "Hospital Billing",
+            "Insurance Verification",
+            "Appointment Scheduling",
+            "Records Management",
+            "Documentation",
+            "Patient Communication",
+          ],
+        },
+        {
+          category: "Computer Skills",
+          skills: ["Microsoft Excel", "Microsoft Word", "Tally Software"],
         },
       ],
-    },
+    } as any,
     {
       type: "education",
       data: [
         {
-          degree: "Degree / Qualification",
-          institution: "University / Institution",
-          graduationYear: "20XX",
+          degree: "MBA in Operations Management",
+          institution: "Pursuing",
+          graduationYear: "2025 (Expected)",
+        },
+        {
+          degree: "Bachelor of Arts",
+          institution: "University of Delhi",
+          graduationYear: "2021",
+        },
+        {
+          degree: "Higher Secondary Education (C.B.S.E)",
+          institution: "Delhi",
+          graduationYear: "2018",
         },
       ],
-    },
+    } as any,
+    {
+      type: "languages",
+      data: [
+        { language: "Hindi", proficiency: "Native" },
+        { language: "English", proficiency: "Intermediate" },
+      ],
+    } as any,
+    {
+      type: "personal",
+      data: {
+        fullName: "Adiba Firoz",
+        fatherName: "Mr. Firoz",
+        dateOfBirth: "19 December 2001",
+        gender: "Female",
+        maritalStatus: "Unmarried",
+        nationality: "Indian",
+      },
+    } as any,
   ],
 };
 
@@ -139,41 +186,8 @@ export default function ResumeCleanerPage() {
     }
   };
 
-  const handleExportPDF = async () => {
-    if (typeof window === "undefined") return;
-
-    const element = document.getElementById("resume-preview");
-    if (!element) return;
-
-    const html2pdf = (await import("html2pdf.js")).default;
-
-    const headerBlock = data.blocks.find((b) => b.type === "header");
-    const fullName =
-      headerBlock?.type === "header"
-        ? (headerBlock.data as { fullName: string }).fullName
-        : "Resume";
-
-    const opt = {
-      margin: 0,
-      filename: `${fullName.replace(/\s+/g, "_")}_Resume.pdf`,
-      image: { type: "jpeg" as const, quality: 0.98 },
-      html2canvas: {
-        scale: 4,
-        useCORS: true,
-        logging: false,
-        windowWidth: 1200, // Fixed width for consistent rendering
-      },
-      jsPDF: {
-        unit: "mm" as const,
-        format: "a4" as const,
-        orientation: "portrait" as const,
-      },
-    };
-
-    // Wait slightly for fonts to stabilize
-    setTimeout(async () => {
-      await html2pdf().set(opt).from(element).save();
-    }, 500);
+  const handleExportPDF = () => {
+    window.print();
   };
 
   const updateBlock = (index: number, newData: ResumeBlock["data"]) => {
@@ -232,7 +246,7 @@ export default function ResumeCleanerPage() {
       "skills",
       "education",
     ];
-    if (mandatory.includes(block.type)) {
+    if (block && mandatory.includes(block.type)) {
       alert(`The ${block.type} section is required for a professional resume.`);
       return;
     }
@@ -541,6 +555,7 @@ export default function ResumeCleanerPage() {
         <div
           className={clsx(
             "no-print",
+            "editor-side",
             "p-8",
             "lg:p-12",
             "bg-[#F8F9FA]/50",
@@ -1938,7 +1953,7 @@ export default function ResumeCleanerPage() {
         </div>
 
         {/* Preview Side */}
-        <div className="bg-white overflow-hidden max-h-[calc(100vh-80px)] border-l border-zinc-200 flex flex-col items-center">
+        <div className="preview-side bg-white overflow-hidden max-h-[calc(100vh-80px)] border-l border-zinc-200 flex flex-col items-center">
           {/* Refined Toolbar */}
           <div className="no-print sticky top-0 z-20 w-full flex justify-between items-center bg-white border-b border-zinc-100 px-8 py-4 shadow-sm transition-all">
             <div className="flex items-center gap-6">
