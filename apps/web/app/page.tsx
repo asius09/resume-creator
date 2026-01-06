@@ -30,6 +30,9 @@ import type {
   ProjectItem,
   SkillGroup,
   EducationItem,
+  LanguageItem,
+  CertificationItem,
+  CustomBlock,
 } from "@resume/types";
 
 const INITIAL_DATA: ResumeData = {
@@ -227,6 +230,17 @@ export default function ResumeCleanerPage() {
           data: { title: "New Section", content: "" },
         };
         break;
+      case "languages":
+        newBlock = {
+          type: "languages",
+          data: [
+            {
+              language: "English",
+              proficiency: "Native",
+            },
+          ],
+        };
+        break;
       default:
         return;
     }
@@ -370,6 +384,24 @@ export default function ResumeCleanerPage() {
           return `EDUCATION\n${(block.data as EducationItem[])
             .map((e) => `${e.degree} | ${e.institution} (${e.graduationYear})`)
             .join("\n")}\n\n`;
+        }
+        if (block.type === "languages") {
+          return `LANGUAGES\n${(block.data as LanguageItem[])
+            .map((l) => `${l.language} - ${l.proficiency}`)
+            .join("\n")}\n\n`;
+        }
+        if (block.type === "certifications") {
+          return `CERTIFICATIONS\n${(block.data as CertificationItem[])
+            .map((c) => `${c.name} - ${c.issuer} (${c.year})`)
+            .join("\n")}\n\n`;
+        }
+        if (block.type === "custom") {
+          const b = block.data as CustomBlock;
+          return `${b.title.toUpperCase()}\n${b.content}\n\n`;
+        }
+        if (block.type === "personal") {
+          const p = block.data as any;
+          return `PERSONAL DETAILS\nDOB: ${p.dateOfBirth}\n${p.gender}\n${p.nationality}\n\n`;
         }
         return "";
       })
@@ -597,34 +629,34 @@ export default function ResumeCleanerPage() {
                 </p>
               </div>
               <div className={clsx("flex", "gap-2")}>
-                {(["projects", "certifications", "custom"] as const).map(
-                  (type) => (
-                    <button
-                      key={type}
-                      onClick={() => addBlock(type)}
-                      className={clsx(
-                        "text-[11px]",
-                        "font-bold",
-                        "text-slate-700",
-                        "bg-white",
-                        "border",
-                        "border-zinc-200",
-                        "px-3",
-                        "py-1.5",
-                        "rounded-lg",
-                        "hover:border-slate-400",
-                        "flex",
-                        "items-center",
-                        "gap-1.5",
-                        "transition-all",
-                        "active:scale-95"
-                      )}
-                    >
-                      <Plus size={12} />{" "}
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </button>
-                  )
-                )}
+                {(
+                  ["languages", "projects", "certifications", "custom"] as const
+                ).map((type) => (
+                  <button
+                    key={type}
+                    onClick={() => addBlock(type)}
+                    className={clsx(
+                      "text-[11px]",
+                      "font-bold",
+                      "text-slate-700",
+                      "bg-white",
+                      "border",
+                      "border-zinc-200",
+                      "px-3",
+                      "py-1.5",
+                      "rounded-lg",
+                      "hover:border-slate-400",
+                      "flex",
+                      "items-center",
+                      "gap-1.5",
+                      "transition-all",
+                      "active:scale-95"
+                    )}
+                  >
+                    <Plus size={12} />{" "}
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -1345,7 +1377,6 @@ export default function ResumeCleanerPage() {
                               "w-full",
                               "text-xs",
                               "font-bold",
-                              "uppercase",
                               "tracking-widest",
                               "text-slate-400",
                               "border-none",
@@ -1557,7 +1588,6 @@ export default function ResumeCleanerPage() {
                               className={clsx(
                                 "text-[10px]",
                                 "font-black",
-                                "uppercase",
                                 "tracking-[0.2em]",
                                 "text-slate-400",
                                 "border-none",
@@ -1793,6 +1823,117 @@ export default function ResumeCleanerPage() {
                     </div>
                   )}
 
+                  {block.type === "languages" && (
+                    <div className="space-y-6">
+                      {block.data.map((item, iIdx) => (
+                        <div
+                          key={iIdx}
+                          className={clsx(
+                            "flex",
+                            "gap-4",
+                            "items-center",
+                            "group/item",
+                            "relative"
+                          )}
+                        >
+                          <input
+                            className={clsx(
+                              "flex-1",
+                              "font-bold",
+                              "text-sm",
+                              "border-none",
+                              "p-0",
+                              "focus:ring-0",
+                              "text-slate-900"
+                            )}
+                            value={item.language}
+                            onChange={(e) => {
+                              const newData = [...block.data];
+                              newData[iIdx] = {
+                                ...item,
+                                language: e.target.value,
+                              };
+                              updateBlock(bIdx, newData);
+                            }}
+                            placeholder="Language (e.g. English)"
+                          />
+                          <input
+                            className={clsx(
+                              "w-32",
+                              "text-right",
+                              "text-xs",
+                              "font-bold",
+                              "text-slate-400",
+                              "border-none",
+                              "p-0",
+                              "focus:ring-0"
+                            )}
+                            value={item.proficiency}
+                            onChange={(e) => {
+                              const newData = [...block.data];
+                              newData[iIdx] = {
+                                ...item,
+                                proficiency: e.target.value,
+                              };
+                              updateBlock(bIdx, newData);
+                            }}
+                            placeholder="Proficiency"
+                          />
+                          <button
+                            onClick={() => {
+                              const newData = block.data.filter(
+                                (_, i) => i !== iIdx
+                              );
+                              updateBlock(bIdx, newData);
+                            }}
+                            className={clsx(
+                              "absolute",
+                              "-right-8",
+                              "top-1/2",
+                              "-translate-y-1/2",
+                              "opacity-0",
+                              "group-hover/item:opacity-100",
+                              "p-2",
+                              "text-slate-300",
+                              "hover:text-red-400",
+                              "transition-all"
+                            )}
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
+                      ))}
+                      <button
+                        onClick={() =>
+                          updateBlock(bIdx, [
+                            ...block.data,
+                            {
+                              language: "New Language",
+                              proficiency: "Proficiency",
+                            },
+                          ])
+                        }
+                        className={clsx(
+                          "w-full",
+                          "py-4",
+                          "border",
+                          "border-dashed",
+                          "border-slate-100",
+                          "rounded-xl",
+                          "text-[11px]",
+                          "font-black",
+                          "uppercase",
+                          "tracking-widest",
+                          "text-slate-400",
+                          "hover:text-slate-600",
+                          "transition-all"
+                        )}
+                      >
+                        + New Language
+                      </button>
+                    </div>
+                  )}
+
                   {block.type === "certifications" && (
                     <div className="space-y-6">
                       {block.data.map((item, iIdx) => (
@@ -1905,7 +2046,6 @@ export default function ResumeCleanerPage() {
                         className={clsx(
                           "w-full",
                           "font-black",
-                          "uppercase",
                           "tracking-[0.2em]",
                           "text-[10px]",
                           "text-slate-400",
@@ -1953,11 +2093,11 @@ export default function ResumeCleanerPage() {
         </div>
 
         {/* Preview Side */}
-        <div className="preview-side bg-white overflow-hidden max-h-[calc(100vh-80px)] border-l border-zinc-200 flex flex-col items-center">
+        <div className={clsx('preview-side', 'bg-white', 'overflow-hidden', 'max-h-[calc(100vh-80px)]', 'border-l', 'border-zinc-200', 'flex', 'flex-col', 'items-center')}>
           {/* Refined Toolbar */}
-          <div className="no-print sticky top-0 z-20 w-full flex justify-between items-center bg-white border-b border-zinc-100 px-8 py-4 shadow-sm transition-all">
-            <div className="flex items-center gap-6">
-              <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200">
+          <div className={clsx('no-print', 'sticky', 'top-0', 'z-20', 'w-full', 'flex', 'justify-between', 'items-center', 'bg-white', 'border-b', 'border-zinc-100', 'px-8', 'py-4', 'shadow-sm', 'transition-all')}>
+            <div className={clsx('flex', 'items-center', 'gap-6')}>
+              <div className={clsx('flex', 'bg-slate-100', 'p-1', 'rounded-lg', 'border', 'border-slate-200')}>
                 <button
                   onClick={() => setPreviewMode("styled")}
                   className={`px-4 py-1.5 text-[10px] font-bold rounded-md transition-all cursor-pointer uppercase tracking-wider ${previewMode === "styled" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"}`}
@@ -1971,16 +2111,16 @@ export default function ResumeCleanerPage() {
                   Plain Text
                 </button>
               </div>
-              <div className="h-6 w-px bg-slate-200" />
-              <span className="text-emerald-600 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest whitespace-nowrap">
+              <div className={clsx('h-6', 'w-px', 'bg-slate-200')} />
+              <span className={clsx('text-emerald-600', 'flex', 'items-center', 'gap-1.5', 'text-[10px]', 'font-bold', 'uppercase', 'tracking-widest', 'whitespace-nowrap')}>
                 <Check size={12} strokeWidth={3} /> ATS Optimized
               </span>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className={clsx('flex', 'items-center', 'gap-4')}>
               <button
                 onClick={handleCopy}
-                className="group flex items-center gap-2 px-6 py-2 bg-slate-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-slate-800 active:scale-95 transition-all shadow-md cursor-pointer whitespace-nowrap"
+                className={clsx('group', 'flex', 'items-center', 'gap-2', 'px-6', 'py-2', 'bg-slate-900', 'text-white', 'rounded-full', 'text-[10px]', 'font-black', 'uppercase', 'tracking-widest', 'hover:bg-slate-800', 'active:scale-95', 'transition-all', 'shadow-md', 'cursor-pointer', 'whitespace-nowrap')}
               >
                 {isCopied ? (
                   <Check size={12} strokeWidth={3} />
@@ -1992,13 +2132,13 @@ export default function ResumeCleanerPage() {
             </div>
           </div>
 
-          <div className="flex-1 w-full overflow-y-auto p-4 lg:p-12 custom-scrollbar flex flex-col items-center pt-12 bg-zinc-100">
+          <div className={clsx('flex-1', 'w-full', 'overflow-y-auto', 'p-4', 'lg:p-12', 'custom-scrollbar', 'flex', 'flex-col', 'items-center', 'pt-12', 'bg-zinc-100')}>
             <div
               id="resume-preview"
               className={`transform scale-[0.75] md:scale-[0.8] lg:scale-[0.85] xl:scale-[0.9] 2xl:scale-[1] origin-top transition-all duration-500 h-fit mb-40 shadow-[0_0_80px_-15px_rgba(0,0,0,0.15)] ${previewMode === "plain" ? "bg-white p-12 w-[210mm] min-h-[297mm] shadow-none rounded-none text-left" : ""}`}
             >
               {previewMode === "plain" ? (
-                <pre className="whitespace-pre-wrap font-mono text-sm text-[#334155]">
+                <pre className={clsx('whitespace-pre-wrap', 'font-mono', 'text-sm', 'text-[#334155]')}>
                   {renderPlainText()}
                 </pre>
               ) : (

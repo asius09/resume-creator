@@ -6,6 +6,9 @@ import type {
   SkillGroup,
   EducationItem,
   ProjectItem,
+  LanguageItem,
+  CertificationItem,
+  CustomBlock,
 } from "@resume/types";
 
 function formatContactLink(contact: Contact): string {
@@ -49,7 +52,7 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
     >
       {/* 1. Header */}
       {headerBlock && headerBlock.type === "header" && (
-        <div className="mb-8 border-b border-[#111] pb-6">
+        <div className="mb-6 border-b border-[#111] pb-6">
           <h1 className="text-[28px] font-bold uppercase tracking-tight mb-3">
             {headerBlock.data.fullName}
           </h1>
@@ -78,9 +81,9 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
 
       {/* 2. Summary */}
       {summaryBlock && summaryBlock.type === "summary" && summaryBlock.data && (
-        <div className="mb-8">
+        <div className="mb-6">
           <h2 className="text-[16px] font-bold uppercase mb-3 border-l-4 border-[#111] pl-3">
-            Professional Profile
+            SUMMARY
           </h2>
           <p className="text-[14px] leading-relaxed text-[#111]">
             {summaryBlock.data as string}
@@ -90,16 +93,16 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
 
       {/* 3. Experience */}
       {experienceBlock && experienceBlock.type === "experience" && (
-        <div className="mb-8">
+        <div className="mb-6">
           <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
-            Employment History
+            EXPERIENCE
           </h2>
           <div className="space-y-6">
             {(experienceBlock.data as ExperienceItem[]).map((item, idx) => (
               <div key={idx}>
                 <div className="flex justify-between items-baseline mb-1">
                   <div className="text-[15px] font-bold">{item.jobTitle}</div>
-                  <div className="text-[14px] font-bold text-[#444]">
+                  <div className="text-[14px] font-bold text-[#444] whitespace-nowrap ml-4">
                     {item.startDate} – {item.endDate || "Present"}
                   </div>
                 </div>
@@ -121,15 +124,19 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
 
       {/* 4. Skills */}
       {skillsBlock && skillsBlock.type === "skills" && (
-        <div className="mb-8">
+        <div className="mb-6">
           <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
-            Core Competencies
+            SKILLS
           </h2>
-          <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+          <div className="space-y-4">
             {(skillsBlock.data as SkillGroup[]).map((item, idx) => (
               <div key={idx} className="text-[14px] leading-normal">
-                <span className="font-bold">{item.category}:</span>{" "}
-                {item.skills.join(", ")}
+                <span className="font-bold">{item.category}:</span>
+                <ul className="list-disc list-outside ml-5 mt-1">
+                  {item.skills.map((skill, sIdx) => (
+                    <li key={sIdx}>{skill}</li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
@@ -138,9 +145,9 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
 
       {/* 5. Education */}
       {educationBlock && educationBlock.type === "education" && (
-        <div className="mb-8">
+        <div className="mb-6">
           <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
-            Education & Qualifications
+            EDUCATION
           </h2>
           <div className="space-y-4">
             {(educationBlock.data as EducationItem[]).map((item, idx) => (
@@ -154,7 +161,7 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
                     {item.institution} {item.gpa && `| GPA: ${item.gpa}`}
                   </div>
                 </div>
-                <div className="font-bold text-[#444]">
+                <div className="font-bold text-[#444] whitespace-nowrap ml-4">
                   {item.graduationYear}
                 </div>
               </div>
@@ -165,26 +172,101 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
 
       {/* 6. Languages */}
       {languagesBlock && languagesBlock.type === "languages" && (
-        <div className="mb-8">
+        <div className="mb-6">
           <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
-            Languages
+            LANGUAGES
           </h2>
-          <div className="text-[14px] flex flex-wrap gap-x-12">
-            {(languagesBlock.data as any[]).map((item, idx) => (
+          <ul className="list-disc list-outside ml-5 text-[14px] space-y-1">
+            {(languagesBlock.data as LanguageItem[]).map((item, idx) => (
+              <li key={idx}>
+                <span className="font-bold">{item.language}</span>
+                {item.proficiency && ` — ${item.proficiency}`}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 7. Projects */}
+      {projectsBlock && projectsBlock.type === "projects" && (
+        <div className="mb-6">
+          <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
+            PROJECTS
+          </h2>
+          <div className="space-y-6">
+            {(projectsBlock.data as ProjectItem[]).map((item, idx) => (
               <div key={idx}>
-                <span className="font-bold">{item.language}:</span>{" "}
-                {item.proficiency}
+                <div className="flex justify-between items-baseline mb-1">
+                  <div className="text-[15px] font-bold">
+                    {item.link ? (
+                      <a
+                        href={item.link}
+                        className="hover:underline text-inherit no-underline"
+                      >
+                        {item.name}
+                      </a>
+                    ) : (
+                      item.name
+                    )}
+                  </div>
+                  {item.dates && (
+                    <div className="text-[14px] font-bold text-[#444] whitespace-nowrap ml-4">
+                      {item.dates}
+                    </div>
+                  )}
+                </div>
+                {item.description && (
+                  <p className="text-[14px] mb-2 italic text-[#444] leading-relaxed">
+                    {item.description}
+                  </p>
+                )}
+                <ul className="list-disc list-outside ml-5 text-[14px] space-y-1.5 text-[#111]">
+                  {item.bullets.map((bullet, bIdx) => (
+                    <li key={bIdx} className="pl-1 leading-normal">
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* 7. Personal Information */}
-      {personalBlock && personalBlock.type === "personal" && (
-        <div className="mb-8">
+      {/* 8. Certifications */}
+      {certsBlock && certsBlock.type === "certifications" && (
+        <div className="mb-6">
           <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
-            Personal Information
+            CERTIFICATIONS
+          </h2>
+          <ul className="list-disc list-outside ml-5 text-[14px] space-y-1.5 text-[#111]">
+            {(certsBlock.data as CertificationItem[]).map((item, idx) => (
+              <li key={idx}>
+                <span className="font-bold">{item.name}</span> — {item.issuer} (
+                {item.year})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 9. Custom Sections */}
+      {customBlocks.map((block, idx) => (
+        <div key={idx} className="mb-6">
+          <h2 className="text-[16px] font-bold mb-4 border-l-4 border-[#111] pl-3">
+            {(block.data as CustomBlock).title}
+          </h2>
+          <div className="text-[14px] whitespace-pre-wrap leading-relaxed">
+            {(block.data as CustomBlock).content}
+          </div>
+        </div>
+      ))}
+
+      {/* 10. Personal Details (Last only) */}
+      {personalBlock && personalBlock.type === "personal" && (
+        <div className="mb-6">
+          <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
+            PERSONAL DETAILS
           </h2>
           <div className="grid grid-cols-2 gap-y-2 text-[14px]">
             <div>
@@ -210,81 +292,6 @@ export const InternationalFormat = ({ data }: { data: ResumeData }) => {
           </div>
         </div>
       )}
-
-      {/* 8. Projects */}
-      {projectsBlock && projectsBlock.type === "projects" && (
-        <div className="mb-8">
-          <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
-            Key Projects
-          </h2>
-          <div className="space-y-6">
-            {(projectsBlock.data as ProjectItem[]).map((item, idx) => (
-              <div key={idx}>
-                <div className="flex justify-between items-baseline mb-1">
-                  <div className="text-[15px] font-bold uppercase">
-                    {item.link ? (
-                      <a
-                        href={item.link}
-                        className="hover:underline text-inherit no-underline"
-                      >
-                        {item.name}
-                      </a>
-                    ) : (
-                      item.name
-                    )}
-                  </div>
-                  {item.dates && (
-                    <div className="text-[14px] font-bold text-[#444]">
-                      {item.dates}
-                    </div>
-                  )}
-                </div>
-                {item.description && (
-                  <p className="text-[14px] mb-2 italic text-[#444] leading-relaxed">
-                    {item.description}
-                  </p>
-                )}
-                <ul className="list-disc list-outside ml-5 text-[14px] space-y-1.5 text-[#111]">
-                  {item.bullets.map((bullet, bIdx) => (
-                    <li key={bIdx} className="pl-1 leading-normal">
-                      {bullet}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* 9. Certifications */}
-      {certsBlock && certsBlock.type === "certifications" && (
-        <div className="mb-8">
-          <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
-            Certifications
-          </h2>
-          <ul className="list-disc list-outside ml-5 text-[14px] space-y-1.5 text-[#111]">
-            {(certsBlock.data as any[]).map((item, idx) => (
-              <li key={idx} className="pl-1 leading-normal">
-                <span className="font-bold">{item.name}</span> — {item.issuer} (
-                {item.year})
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      {/* 10. Custom Sections */}
-      {customBlocks.map((block, idx) => (
-        <div key={idx} className="mb-8">
-          <h2 className="text-[16px] font-bold uppercase mb-4 border-l-4 border-[#111] pl-3">
-            {(block.data as any).title}
-          </h2>
-          <div className="text-[14px] whitespace-pre-wrap leading-relaxed">
-            {(block.data as any).content}
-          </div>
-        </div>
-      ))}
     </div>
   );
 };

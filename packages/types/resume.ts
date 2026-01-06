@@ -110,6 +110,7 @@ export const ResumeDataSchema = z.object({
 
 export type Contact = z.infer<typeof ContactSchema>;
 export type Header = z.infer<typeof HeaderSchema>;
+export type LanguageItem = z.infer<typeof LanguageItemSchema>;
 export type ExperienceItem = z.infer<typeof ExperienceItemSchema>;
 export type ProjectItem = z.infer<typeof ProjectItemSchema>;
 export type EducationItem = z.infer<typeof EducationItemSchema>;
