@@ -1111,6 +1111,7 @@ export default function ResumeCleanerPage() {
                               companyName: "Company",
                               location: "City",
                               startDate: "202X",
+                              isCurrent: false,
                               bullets: [""],
                             },
                           ])
