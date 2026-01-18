@@ -18,9 +18,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Resume Creator V1.0.0",
+  title: "Resume: Zero",
   description:
-    "Create ATS-safe professional resumes with live preview and clean PDF export.",
+    "The minimalist, ATS-optimized resume builder for professionals. Zero friction, zero clutter.",
+  openGraph: {
+    title: "Resume: Zero",
+    description:
+      "The minimalist, ATS-optimized resume builder for professionals.",
+    images: ["/og-image.png"],
+  },
 };
 
 export default function RootLayout({

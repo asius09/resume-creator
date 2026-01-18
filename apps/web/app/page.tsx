@@ -154,6 +154,7 @@ export default function ResumeCleanerPage() {
     "minimalist" | "professional" | "international"
   >("minimalist");
   const [isMounted, setIsMounted] = useState(false);
+  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
 
   // Load from LocalStorage once on mount
   useEffect(() => {
@@ -430,7 +431,7 @@ export default function ResumeCleanerPage() {
                 "text-slate-900",
               )}
             >
-              Resume Creator
+              Resume: Zero
             </h1>
             <p
               className={clsx(
@@ -546,15 +547,38 @@ export default function ResumeCleanerPage() {
           "lg:grid-cols-2",
           "gap-0",
           "min-h-[calc(100vh-80px)]",
+          "relative"
         )}
       >
+        {/* Mobile View Toggle */}
+        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-slate-900 text-white rounded-full p-1 shadow-2xl flex items-center border border-white/10 backdrop-blur-md">
+          <button
+            onClick={() => setMobileView("edit")}
+            className={clsx(
+              "px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all",
+              mobileView === "edit" ? "bg-white text-slate-900" : "text-white/60"
+            )}
+          >
+            Edit
+          </button>
+          <button
+            onClick={() => setMobileView("preview")}
+            className={clsx(
+              "px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all",
+              mobileView === "preview" ? "bg-white text-slate-900" : "text-white/60"
+            )}
+          >
+            Preview
+          </button>
+        </div>
         {/* Editor Side */}
         <div
           className={clsx(
             "no-print",
             "editor-side",
-            "p-8",
+            "p-6",
             "lg:p-12",
+            mobileView === "edit" ? "block" : "hidden lg:block",
             "bg-[#F8F9FA]/50",
             "border-r",
             "border-zinc-200",
@@ -593,7 +617,7 @@ export default function ResumeCleanerPage() {
                   Structure is set. Focus on your story.
                 </p>
               </div>
-              <div className={clsx("flex", "gap-2")}>
+                <div className={clsx("flex", "flex-wrap", "gap-2")}>
                 {(
                   ["languages", "projects", "certifications", "custom"] as const
                 ).map((type) => (
@@ -2038,6 +2062,7 @@ export default function ResumeCleanerPage() {
             "flex",
             "flex-col",
             "items-center",
+            mobileView === "preview" ? "block" : "hidden lg:flex"
           )}
         >
           {/* Refined Toolbar */}
@@ -2154,7 +2179,7 @@ export default function ResumeCleanerPage() {
           >
             <div
               id="resume-preview"
-              className={`transform scale-[0.75] md:scale-[0.8] lg:scale-[0.85] xl:scale-[0.9] 2xl:scale-[1] print:scale-100 print:transform-none origin-top transition-all duration-500 h-fit mb-40 shadow-[0_0_80px_-15px_rgba(0,0,0,0.15)] ${previewMode === "plain" ? "bg-white p-12 w-[210mm] min-h-[297mm] shadow-none rounded-none text-left" : ""}`}
+              className={`transform scale-[0.45] sm:scale-[0.6] md:scale-[0.8] lg:scale-[0.85] xl:scale-[0.9] 2xl:scale-[1] print:scale-100 print:transform-none origin-top transition-all duration-500 h-fit mb-40 shadow-[0_0_80px_-15px_rgba(0,0,0,0.15)] ${previewMode === "plain" ? "bg-white p-12 w-[210mm] min-h-[297mm] shadow-none rounded-none text-left" : ""}`}
             >
               {previewMode === "plain" ? (
                 <pre
