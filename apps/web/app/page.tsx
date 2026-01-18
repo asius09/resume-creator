@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { clsx } from "clsx";
 
@@ -416,33 +417,28 @@ export default function ResumeCleanerPage() {
   if (!isMounted) return null;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-blue-100 selection:text-blue-900">
-      <header className="no-print sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-200 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center text-white font-black shadow-lg shadow-slate-200 ring-1 ring-white/20">
-            R
-          </div>
+    <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-100 selection:text-black">
+      <header className="no-print sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-dashed border-zinc-200 px-6 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Image
+            src="/logo.svg"
+            alt="Resume: Zero Logo"
+            width={32}
+            height={32}
+          />
+          <div className="h-6 w-px bg-zinc-200 mx-1 hidden sm:block" />
           <div>
-            <h1
-              className={clsx(
-                "text-base",
-                "font-bold",
-                "tracking-tight",
-                "text-slate-900",
-              )}
-            >
-              Resume: Zero
-            </h1>
-            <p
-              className={clsx(
-                "text-[10px]",
-                "text-slate-500",
-                "font-bold",
-                "uppercase",
-                "tracking-[0.2em]",
-              )}
-            >
-              Beginner First • Version 1.0.0
+            <div className="flex items-center gap-2">
+              <h1 className="text-[14px] font-semibold tracking-tight text-zinc-900 leading-none">
+                Resume: Zero
+              </h1>
+              <span className="text-zinc-300">/</span>
+              <span className="text-[14px] font-medium text-zinc-500">
+                My Resume
+              </span>
+            </div>
+            <p className="text-[10px] text-zinc-400 font-medium uppercase tracking-wider mt-1">
+              v1.0 • ATS Optimized
             </p>
           </div>
         </div>
@@ -452,11 +448,9 @@ export default function ResumeCleanerPage() {
             className={clsx(
               "hidden",
               "md:flex",
-              "bg-slate-100",
-              "p-1",
-              "rounded-xl",
-              "border",
-              "border-slate-200",
+              "bg-zinc-100/50 border border-zinc-200",
+              "p-0.5",
+              "rounded-lg",
             )}
           >
             {(["minimalist", "professional", "international"] as const).map(
@@ -470,10 +464,10 @@ export default function ResumeCleanerPage() {
                       metadata: { ...prev.metadata, theme: t },
                     }));
                   }}
-                  className={`px-4 py-1.5 text-[11px] font-bold rounded-lg transition-all capitalize cursor-pointer ${
+                  className={`px-3 py-1 text-[11px] font-medium rounded-md transition-all capitalize cursor-pointer ${
                     activeLayout === t
-                      ? "bg-white shadow-sm text-slate-900"
-                      : "text-slate-500 hover:text-slate-700"
+                      ? "bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] text-slate-900"
+                      : "text-zinc-500 hover:text-zinc-800"
                   }`}
                 >
                   {t}
@@ -487,23 +481,18 @@ export default function ResumeCleanerPage() {
           <button
             onClick={autoClean}
             className={clsx(
-              "group",
-              "relative",
               "flex",
               "items-center",
               "gap-2",
-              "px-5",
-              "py-2.5",
-              "bg-slate-900",
+              "px-4",
+              "py-1.5",
+              "bg-black",
               "text-white",
-              "rounded-full",
-              "text-xs",
-              "font-bold",
-              "hover:bg-slate-800",
-              "active:scale-95",
+              "rounded-md",
+              "text-[11px]",
+              "font-medium",
+              "hover:bg-zinc-800",
               "transition-all",
-              "shadow-md",
-              "shadow-slate-100",
               "cursor-pointer",
             )}
           >
@@ -516,23 +505,21 @@ export default function ResumeCleanerPage() {
               "flex",
               "items-center",
               "gap-2",
-              "px-5",
-              "py-2.5",
+              "px-4",
+              "py-1.5",
               "border",
               "border-zinc-200",
               "bg-white",
-              "text-slate-900",
-              "rounded-full",
-              "text-xs",
-              "font-bold",
-              "hover:bg-slate-50",
-              "active:scale-95",
+              "text-zinc-900",
+              "rounded-md",
+              "text-[11px]",
+              "font-medium",
+              "hover:bg-zinc-50",
               "transition-all",
-              "shadow-sm",
               "cursor-pointer",
             )}
           >
-            <Download size={14} />
+            <Download size={12} />
             Export PDF
           </button>
         </div>
@@ -547,16 +534,16 @@ export default function ResumeCleanerPage() {
           "lg:grid-cols-2",
           "gap-0",
           "min-h-[calc(100vh-80px)]",
-          "relative"
+          "relative",
         )}
       >
         {/* Mobile View Toggle */}
-        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-slate-900 text-white rounded-full p-1 shadow-2xl flex items-center border border-white/10 backdrop-blur-md">
+        <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-black text-white rounded-full p-1 shadow-2xl flex items-center border border-white/10">
           <button
             onClick={() => setMobileView("edit")}
             className={clsx(
-              "px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all",
-              mobileView === "edit" ? "bg-white text-slate-900" : "text-white/60"
+              "px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
+              mobileView === "edit" ? "bg-white text-black" : "text-white/60",
             )}
           >
             Edit
@@ -564,8 +551,10 @@ export default function ResumeCleanerPage() {
           <button
             onClick={() => setMobileView("preview")}
             className={clsx(
-              "px-6 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all",
-              mobileView === "preview" ? "bg-white text-slate-900" : "text-white/60"
+              "px-6 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
+              mobileView === "preview"
+                ? "bg-white text-black"
+                : "text-white/60",
             )}
           >
             Preview
@@ -579,7 +568,7 @@ export default function ResumeCleanerPage() {
             "p-6",
             "lg:p-12",
             mobileView === "edit" ? "block" : "hidden lg:block",
-            "bg-[#F8F9FA]/50",
+            "bg-[#fafafa]",
             "border-r",
             "border-zinc-200",
             "overflow-y-auto",
@@ -588,7 +577,7 @@ export default function ResumeCleanerPage() {
           )}
         >
           <div
-            className={clsx("max-w-[700px]", "mx-auto", "space-y-10", "pb-20")}
+            className={clsx("max-w-[700px]", "mx-auto", "space-y-6", "pb-20")}
           >
             <div
               className={clsx(
@@ -597,27 +586,27 @@ export default function ResumeCleanerPage() {
                 "justify-between",
                 "border-b",
                 "border-zinc-200",
-                "pb-4",
+                "pb-6",
                 "mb-2",
               )}
             >
               <div>
                 <h2
                   className={clsx(
-                    "text-3xl",
-                    "font-black",
+                    "text-2xl",
+                    "font-bold",
                     "tracking-tight",
-                    "text-slate-900",
+                    "text-zinc-900",
                     "mb-1",
                   )}
                 >
                   Editor
                 </h2>
-                <p className={clsx("text-sm", "text-slate-500", "font-medium")}>
-                  Structure is set. Focus on your story.
+                <p className={clsx("text-xs", "text-zinc-500", "font-medium")}>
+                  Focus on your experience. We handle the rest.
                 </p>
               </div>
-                <div className={clsx("flex", "flex-wrap", "gap-2")}>
+              <div className={clsx("flex", "flex-wrap", "gap-2")}>
                 {(
                   ["languages", "projects", "certifications", "custom"] as const
                 ).map((type) => (
@@ -626,20 +615,19 @@ export default function ResumeCleanerPage() {
                     onClick={() => addBlock(type)}
                     className={clsx(
                       "text-[11px]",
-                      "font-bold",
-                      "text-slate-700",
+                      "font-medium",
+                      "text-zinc-600",
                       "bg-white",
                       "border",
                       "border-zinc-200",
                       "px-3",
                       "py-1.5",
-                      "rounded-lg",
-                      "hover:border-slate-400",
+                      "rounded-md",
+                      "hover:bg-zinc-50",
                       "flex",
                       "items-center",
                       "gap-1.5",
                       "transition-all",
-                      "active:scale-95",
                       "cursor-pointer",
                     )}
                   >
@@ -665,15 +653,14 @@ export default function ResumeCleanerPage() {
                   key={bIdx}
                   className={clsx(
                     "bg-white",
-                    "rounded-[24px]",
+                    "rounded-lg",
                     "border",
                     "border-zinc-200",
-                    "shadow-sm",
                     "p-8",
                     "group",
                     "relative",
-                    "hover:border-slate-300",
-                    "transition-all",
+                    "hover:shadow-md",
+                    "transition-shadow",
                   )}
                 >
                   <div
@@ -1244,29 +1231,28 @@ export default function ResumeCleanerPage() {
                       <button
                         onClick={() => {
                           const newItem: ExperienceItem = {
-                            jobTitle: "New Role",
-                            companyName: "Company",
-                            startDate: "Date",
-                            bullets: [],
+                            jobTitle: "",
+                            companyName: "",
+                            startDate: "",
+                            endDate: "",
+                            location: "",
                             isCurrent: false,
+                            bullets: [""],
                           };
                           updateBlock(bIdx, [...block.data, newItem]);
                         }}
                         className={clsx(
                           "w-full",
-                          "py-4",
+                          "py-3",
                           "border-2",
                           "border-dashed",
-                          "border-slate-100",
-                          "rounded-2xl",
+                          "border-zinc-200",
+                          "rounded-md",
                           "text-[11px]",
-                          "font-black",
-                          "uppercase",
-                          "tracking-widest",
-                          "text-slate-400",
-                          "hover:text-slate-600",
-                          "hover:border-slate-200",
-                          "hover:bg-slate-50",
+                          "font-medium",
+                          "text-zinc-400",
+                          "hover:text-zinc-900",
+                          "hover:border-zinc-300",
                           "transition-all",
                           "cursor-pointer",
                         )}
@@ -1487,26 +1473,24 @@ export default function ResumeCleanerPage() {
                           const newItem: ProjectItem = {
                             name: "New Project",
                             description: "Summary",
-                            bullets: [],
+                            bullets: [""],
                           };
                           updateBlock(bIdx, [...block.data, newItem]);
                         }}
                         className={clsx(
                           "w-full",
-                          "py-4",
+                          "py-3",
                           "border-2",
                           "border-dashed",
-                          "border-slate-100",
-                          "rounded-2xl",
+                          "border-zinc-200",
+                          "rounded-md",
                           "text-[11px]",
-                          "font-black",
-                          "uppercase",
-                          "tracking-widest",
-                          "text-slate-400",
-                          "hover:text-slate-600",
-                          "hover:border-slate-200",
-                          "hover:bg-slate-50",
+                          "font-medium",
+                          "text-zinc-400",
+                          "hover:text-zinc-900",
+                          "hover:border-zinc-300",
                           "transition-all",
+                          "cursor-pointer",
                         )}
                       >
                         + New Project Item
@@ -2062,7 +2046,7 @@ export default function ResumeCleanerPage() {
             "flex",
             "flex-col",
             "items-center",
-            mobileView === "preview" ? "block" : "hidden lg:flex"
+            mobileView === "preview" ? "block" : "hidden lg:flex",
           )}
         >
           {/* Refined Toolbar */}
