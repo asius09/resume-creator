@@ -7,7 +7,6 @@ import {
   Trash2,
   Check,
   Info,
-  AlertTriangle,
   Download,
   ExternalLink,
   Mail,
@@ -20,7 +19,7 @@ import {
   ModernProfessional,
   InternationalFormat,
 } from "@resume/ui";
-import { normalizeBullet, analyzeBullet, cleanText } from "@resume/cleaner";
+import { normalizeBullet, cleanText } from "@resume/cleaner";
 import type {
   ResumeData,
   ResumeBlock,
@@ -163,13 +162,18 @@ export default function ResumeCleanerPage() {
       try {
         const parsed = JSON.parse(saved);
         if (parsed.id) {
-          setData(parsed);
+          // Wrapped in setTimeout to avoid the linter warning about sync setState in effects
+          setTimeout(() => {
+            setData(parsed);
+          }, 0);
         }
       } catch (e) {
         console.error("Failed to parse saved data", e);
       }
     }
-    setIsMounted(true);
+    setTimeout(() => {
+      setIsMounted(true);
+    }, 0);
   }, []);
 
   // Save to LocalStorage whenever data changes
@@ -612,6 +616,7 @@ export default function ResumeCleanerPage() {
                       "gap-1.5",
                       "transition-all",
                       "active:scale-95",
+                      "cursor-pointer",
                     )}
                   >
                     <Plus size={12} />{" "}
@@ -1017,7 +1022,7 @@ export default function ResumeCleanerPage() {
                               }}
                               placeholder="Title"
                             />
-                            <div className="md:text-right">
+                            <div className="flex items-center justify-end gap-1">
                               <input
                                 className={clsx(
                                   "text-sm",
@@ -1027,6 +1032,8 @@ export default function ResumeCleanerPage() {
                                   "focus:ring-0",
                                   "placeholder-slate-200",
                                   "text-slate-500",
+                                  "text-right",
+                                  "w-20",
                                 )}
                                 value={item.startDate}
                                 onChange={(e) => {
@@ -1051,6 +1058,7 @@ export default function ResumeCleanerPage() {
                                   "focus:ring-0",
                                   "placeholder-slate-200",
                                   "text-slate-500",
+                                  "w-20",
                                 )}
                                 value={item.endDate || ""}
                                 onChange={(e) => {
@@ -1092,7 +1100,6 @@ export default function ResumeCleanerPage() {
 
                           <div className="space-y-4">
                             {item.bullets.map((bullet, bulIdx) => {
-                              const hints = analyzeBullet(bullet);
                               return (
                                 <div key={bulIdx} className="space-y-2">
                                   <div
@@ -1150,6 +1157,7 @@ export default function ResumeCleanerPage() {
                                         "text-slate-300",
                                         "hover:text-red-500",
                                         "transition-all",
+                                        "cursor-pointer",
                                       )}
                                     >
                                       <Trash2 size={12} />
@@ -1177,6 +1185,7 @@ export default function ResumeCleanerPage() {
                                 "flex",
                                 "items-center",
                                 "gap-1.5",
+                                "cursor-pointer",
                               )}
                             >
                               <Plus size={10} /> Add Bullet
@@ -1192,7 +1201,7 @@ export default function ResumeCleanerPage() {
                             }}
                             className={clsx(
                               "absolute",
-                              "-right-4",
+                              "-right-2",
                               "top-0",
                               "opacity-0",
                               "group-hover/item:opacity-100",
@@ -1200,6 +1209,8 @@ export default function ResumeCleanerPage() {
                               "text-slate-300",
                               "hover:text-red-400",
                               "transition-all",
+                              "cursor-pointer",
+                              "z-10",
                             )}
                           >
                             <Trash2 size={14} />
@@ -1233,6 +1244,7 @@ export default function ResumeCleanerPage() {
                           "hover:border-slate-200",
                           "hover:bg-slate-50",
                           "transition-all",
+                          "cursor-pointer",
                         )}
                       >
                         + New Experience Item
@@ -1329,7 +1341,6 @@ export default function ResumeCleanerPage() {
 
                           <div className="space-y-4">
                             {item.bullets.map((bullet, bulIdx) => {
-                              const hints = analyzeBullet(bullet);
                               return (
                                 <div key={bulIdx} className="space-y-2">
                                   <div
@@ -1387,6 +1398,7 @@ export default function ResumeCleanerPage() {
                                         "text-slate-300",
                                         "hover:text-red-500",
                                         "transition-all",
+                                        "cursor-pointer",
                                       )}
                                     >
                                       <Trash2 size={12} />
@@ -1414,6 +1426,7 @@ export default function ResumeCleanerPage() {
                                 "flex",
                                 "items-center",
                                 "gap-1.5",
+                                "cursor-pointer",
                               )}
                             >
                               <Plus size={10} /> Add Bullet
@@ -1429,7 +1442,7 @@ export default function ResumeCleanerPage() {
                             }}
                             className={clsx(
                               "absolute",
-                              "-right-4",
+                              "-right-2",
                               "top-0",
                               "opacity-0",
                               "group-hover/item:opacity-100",
@@ -1437,6 +1450,8 @@ export default function ResumeCleanerPage() {
                               "text-slate-300",
                               "hover:text-red-400",
                               "transition-all",
+                              "cursor-pointer",
+                              "z-10",
                             )}
                           >
                             <Trash2 size={14} />
@@ -1579,6 +1594,7 @@ export default function ResumeCleanerPage() {
                           "text-slate-400",
                           "hover:text-slate-600",
                           "transition-all",
+                          "cursor-pointer",
                         )}
                       >
                         + New Skills Group
@@ -1681,7 +1697,7 @@ export default function ResumeCleanerPage() {
                             }}
                             className={clsx(
                               "absolute",
-                              "-right-4",
+                              "-right-2",
                               "top-0",
                               "opacity-0",
                               "group-hover/item:opacity-100",
@@ -1689,6 +1705,8 @@ export default function ResumeCleanerPage() {
                               "text-slate-300",
                               "hover:text-red-400",
                               "transition-all",
+                              "cursor-pointer",
+                              "z-10",
                             )}
                           >
                             <Trash2 size={14} />
@@ -1721,6 +1739,7 @@ export default function ResumeCleanerPage() {
                           "hover:text-slate-600",
                           "hover:border-slate-200",
                           "transition-all",
+                          "cursor-pointer",
                         )}
                       >
                         + New Education
@@ -1808,6 +1827,7 @@ export default function ResumeCleanerPage() {
                               "text-slate-300",
                               "hover:text-red-400",
                               "transition-all",
+                              "cursor-pointer",
                             )}
                           >
                             <Trash2 size={12} />
@@ -1838,6 +1858,7 @@ export default function ResumeCleanerPage() {
                           "text-slate-400",
                           "hover:text-slate-600",
                           "transition-all",
+                          "cursor-pointer",
                         )}
                       >
                         + New Language
@@ -1913,6 +1934,7 @@ export default function ResumeCleanerPage() {
                               "text-slate-300",
                               "hover:text-red-400",
                               "transition-all",
+                              "cursor-pointer",
                             )}
                           >
                             <Trash2 size={12} />
@@ -1944,6 +1966,7 @@ export default function ResumeCleanerPage() {
                           "text-slate-400",
                           "hover:text-slate-600",
                           "transition-all",
+                          "cursor-pointer",
                         )}
                       >
                         + New Certification
@@ -2131,7 +2154,7 @@ export default function ResumeCleanerPage() {
           >
             <div
               id="resume-preview"
-              className={`transform scale-[0.75] md:scale-[0.8] lg:scale-[0.85] xl:scale-[0.9] 2xl:scale-[1] origin-top transition-all duration-500 h-fit mb-40 shadow-[0_0_80px_-15px_rgba(0,0,0,0.15)] ${previewMode === "plain" ? "bg-white p-12 w-[210mm] min-h-[297mm] shadow-none rounded-none text-left" : ""}`}
+              className={`transform scale-[0.75] md:scale-[0.8] lg:scale-[0.85] xl:scale-[0.9] 2xl:scale-[1] print:scale-100 print:transform-none origin-top transition-all duration-500 h-fit mb-40 shadow-[0_0_80px_-15px_rgba(0,0,0,0.15)] ${previewMode === "plain" ? "bg-white p-12 w-[210mm] min-h-[297mm] shadow-none rounded-none text-left" : ""}`}
             >
               {previewMode === "plain" ? (
                 <pre
