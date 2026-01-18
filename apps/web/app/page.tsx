@@ -1854,17 +1854,16 @@ export default function ResumeCleanerPage() {
                         }
                         className={clsx(
                           "w-full",
-                          "py-4",
-                          "border",
+                          "py-3",
+                          "border-2",
                           "border-dashed",
-                          "border-slate-100",
-                          "rounded-xl",
+                          "border-zinc-200",
+                          "rounded-md",
                           "text-[11px]",
-                          "font-black",
-                          "uppercase",
-                          "tracking-widest",
-                          "text-slate-400",
-                          "hover:text-slate-600",
+                          "font-medium",
+                          "text-zinc-400",
+                          "hover:text-zinc-900",
+                          "hover:border-zinc-300",
                           "transition-all",
                           "cursor-pointer",
                         )}
@@ -1962,23 +1961,117 @@ export default function ResumeCleanerPage() {
                         }
                         className={clsx(
                           "w-full",
-                          "py-4",
-                          "border",
+                          "py-3",
+                          "border-2",
                           "border-dashed",
-                          "border-slate-100",
-                          "rounded-xl",
+                          "border-zinc-200",
+                          "rounded-md",
                           "text-[11px]",
-                          "font-black",
-                          "uppercase",
-                          "tracking-widest",
-                          "text-slate-400",
-                          "hover:text-slate-600",
+                          "font-medium",
+                          "text-zinc-400",
+                          "hover:text-zinc-900",
+                          "hover:border-zinc-300",
                           "transition-all",
                           "cursor-pointer",
                         )}
                       >
                         + New Certification
                       </button>
+                    </div>
+                  )}
+
+                  {block.type === "personal" && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                          Full Name
+                        </label>
+                        <input
+                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
+                          value={block.data.fullName}
+                          onChange={(e) =>
+                            updateBlock(bIdx, {
+                              ...block.data,
+                              fullName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                          Father&apos;s Name
+                        </label>
+                        <input
+                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
+                          value={block.data.fatherName}
+                          onChange={(e) =>
+                            updateBlock(bIdx, {
+                              ...block.data,
+                              fatherName: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                          Date of Birth
+                        </label>
+                        <input
+                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
+                          value={block.data.dateOfBirth}
+                          onChange={(e) =>
+                            updateBlock(bIdx, {
+                              ...block.data,
+                              dateOfBirth: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                          Gender
+                        </label>
+                        <input
+                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
+                          value={block.data.gender}
+                          onChange={(e) =>
+                            updateBlock(bIdx, {
+                              ...block.data,
+                              gender: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                          Marital Status
+                        </label>
+                        <input
+                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
+                          value={block.data.maritalStatus}
+                          onChange={(e) =>
+                            updateBlock(bIdx, {
+                              ...block.data,
+                              maritalStatus: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">
+                          Nationality
+                        </label>
+                        <input
+                          className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
+                          value={block.data.nationality}
+                          onChange={(e) =>
+                            updateBlock(bIdx, {
+                              ...block.data,
+                              nationality: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
                     </div>
                   )}
 
