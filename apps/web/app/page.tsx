@@ -7,7 +7,6 @@ import {
   Plus,
   Trash2,
   Check,
-  Info,
   Download,
   ExternalLink,
   Mail,
@@ -33,12 +32,14 @@ import type {
   LanguageItem,
   CertificationItem,
   CustomBlock,
+  PersonalDetailItem,
 } from "@resume/types";
 
 const INITIAL_DATA: ResumeData = {
   id: crypto.randomUUID(),
   version: 1,
   metadata: {
+    name: "My Resume",
     theme: "minimalist",
     images: ["/og-image.png"],
     icons: {
@@ -171,7 +172,7 @@ export default function ResumeCleanerPage() {
         if (parsed.id) {
           // Robust data migration for personal block
           if (parsed.blocks) {
-            parsed.blocks = parsed.blocks.map((block: any) => {
+            parsed.blocks = parsed.blocks.map((block: ResumeBlock) => {
               if (block.type === "personal" && !Array.isArray(block.data)) {
                 return {
                   ...block,
@@ -220,7 +221,10 @@ export default function ResumeCleanerPage() {
   };
 
   const handleExportPDF = () => {
+    const originalTitle = document.title;
+    document.title = data.metadata.name || "My Resume";
     window.print();
+    document.title = originalTitle;
   };
 
   const updateBlock = (index: number, newData: ResumeBlock["data"]) => {
@@ -442,8 +446,10 @@ export default function ResumeCleanerPage() {
           return `${b.title.toUpperCase()}\n${b.content}\n\n`;
         }
         if (block.type === "personal") {
-          const p = block.data;
-          return `PERSONAL DETAILS\nDOB: ${p.dateOfBirth}\n${p.gender}\n${p.nationality}\n\n`;
+          const p = block.data as PersonalDetailItem[];
+          return `PERSONAL DETAILS\n${p
+            .map((item) => `${item.label}: ${item.value}`)
+            .join("\n")}\n\n`;
         }
         return "";
       })
@@ -465,17 +471,25 @@ export default function ResumeCleanerPage() {
           />
           <div className="h-6 w-px bg-zinc-200 mx-1 hidden sm:block" />
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-[14px] font-semibold tracking-tight text-zinc-900 leading-none">
+            <div className="flex items-center gap-2 whitespace-nowrap">
+              <h1 className="text-[14px] font-semibold tracking-tight text-zinc-900 leading-none hidden xs:block">
                 Resume: Zero
               </h1>
-              <span className="text-zinc-300">/</span>
-              <span className="text-[14px] font-medium text-zinc-700">
-                My Resume
-              </span>
+              <span className="text-zinc-300 hidden xs:block">/</span>
+              <input
+                className="text-[14px] font-medium text-zinc-700 bg-transparent border-none p-0 focus:ring-0 w-24 sm:w-32 focus:text-zinc-900 transition-colors truncate"
+                value={data.metadata.name || ""}
+                onChange={(e) =>
+                  setData((prev) => ({
+                    ...prev,
+                    metadata: { ...prev.metadata, name: e.target.value },
+                  }))
+                }
+                placeholder="My Resume"
+              />
             </div>
             <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-wider mt-1">
-              v1.0 • ATS Optimized
+              v1.0.0
             </p>
           </div>
         </div>
@@ -521,16 +535,21 @@ export default function ResumeCleanerPage() {
               "flex",
               "items-center",
               "gap-2",
-              "px-4",
-              "py-1.5",
+              "px-3",
+              "sm:px-4",
+              "py-2",
+              "sm:py-1.5",
               "bg-black",
               "text-white",
               "rounded-lg",
               "text-[11px]",
-              "font-medium",
+              "font-bold",
+              "sm:font-medium",
               "hover:bg-zinc-800",
+              "active:scale-95",
               "transition-all",
               "cursor-pointer",
+              "whitespace-nowrap",
             )}
           >
             Clean All
@@ -542,7 +561,8 @@ export default function ResumeCleanerPage() {
               "flex",
               "items-center",
               "gap-2",
-              "px-4",
+              "px-3",
+              "sm:px-4",
               "py-1.5",
               "border",
               "border-zinc-200",
@@ -557,7 +577,8 @@ export default function ResumeCleanerPage() {
             )}
           >
             <Download size={12} />
-            Export PDF
+            <span className="hidden xs:inline">Export PDF</span>
+            <span className="xs:hidden">PDF</span>
           </button>
         </div>
       </header>
@@ -618,62 +639,39 @@ export default function ResumeCleanerPage() {
             className={clsx("max-w-[700px]", "mx-auto", "space-y-6", "pb-20")}
           >
             <div
-              className={clsx(
-                "flex",
-                "items-end",
-                "justify-between",
-                "border-b",
-                "border-zinc-200",
-                "pb-6",
-                "mb-2",
-              )}
+              className={clsx("border-b", "border-zinc-200", "pb-6", "mb-2")}
             >
-              <div>
-                <h2
-                  className={clsx(
-                    "text-2xl",
-                    "font-bold",
-                    "tracking-tight",
-                    "text-zinc-900",
-                    "mb-1",
-                  )}
-                >
+              <div className="mb-4">
+                <h2 className="text-xl font-bold tracking-tight text-zinc-900">
                   Editor
                 </h2>
-                <p className={clsx("text-xs", "text-zinc-600", "font-medium")}>
+                <p className="text-xs text-zinc-500 font-medium">
                   Focus on your experience. We handle the rest.
                 </p>
               </div>
-              <div className={clsx("flex", "flex-wrap", "gap-2")}>
+              <div
+                className={clsx(
+                  "flex",
+                  "flex-nowrap",
+                  "overflow-x-auto",
+                  "gap-2",
+                  "pb-2",
+                  "custom-scrollbar-hide",
+                )}
+              >
                 {(
                   [
                     "languages",
                     "projects",
                     "certifications",
-                    "custom",
                     "personal",
+                    "custom",
                   ] as const
                 ).map((type) => (
                   <button
                     key={type}
                     onClick={() => addBlock(type)}
-                    className={clsx(
-                      "text-[11px]",
-                      "font-medium",
-                      "text-zinc-600",
-                      "bg-white",
-                      "border",
-                      "border-zinc-200",
-                      "px-3",
-                      "py-1.5",
-                      "rounded-md",
-                      "hover:bg-zinc-50",
-                      "flex",
-                      "items-center",
-                      "gap-1.5",
-                      "transition-all",
-                      "cursor-pointer",
-                    )}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-zinc-100 rounded-lg text-[11px] font-semibold text-zinc-500 hover:text-zinc-900 hover:border-zinc-200 transition-all cursor-pointer whitespace-nowrap shrink-0"
                   >
                     <Plus size={12} />{" "}
                     {type === "personal"
@@ -695,20 +693,7 @@ export default function ResumeCleanerPage() {
               const isMandatory = mandatory.includes(block.type);
 
               return (
-                <div
-                  key={bIdx}
-                  className={clsx(
-                    "bg-white",
-                    "rounded-lg",
-                    "border",
-                    "border-zinc-200",
-                    "p-8",
-                    "group",
-                    "relative",
-                    "hover:shadow-md",
-                    "transition-shadow",
-                  )}
-                >
+                <div key={bIdx} className="editor-section group">
                   <div
                     className={clsx(
                       "flex",
@@ -725,28 +710,9 @@ export default function ResumeCleanerPage() {
                         "text-zinc-400",
                       )}
                     >
-                      <span
-                        className={clsx(
-                          "text-[10px]",
-                          "font-black",
-                          "uppercase",
-                          "tracking-[0.2em]",
-                        )}
-                      >
-                        {block.type}
-                      </span>
+                      <span className="editor-label">{block.type}</span>
                       {isMandatory && (
-                        <span
-                          className={clsx(
-                            "bg-zinc-100",
-                            "text-zinc-700",
-                            "text-[9px]",
-                            "px-2",
-                            "py-0.5",
-                            "rounded-md",
-                            "font-bold",
-                          )}
-                        >
+                        <span className="text-[10px] font-bold text-zinc-400/80 bg-zinc-100 px-1.5 py-0.5 rounded">
                           REQUIRED
                         </span>
                       )}
@@ -793,17 +759,8 @@ export default function ResumeCleanerPage() {
                   {block.type === "header" && (
                     <div className="space-y-6">
                       <input
-                        className={clsx(
-                          "w-full",
-                          "text-3xl",
-                          "font-black",
-                          "border-none",
-                          "p-0",
-                          "focus:ring-0",
-                          "placeholder-zinc-200",
-                          "text-zinc-900",
-                        )}
-                        value={block.data.fullName}
+                        className="text-2xl font-bold tracking-tight text-zinc-900 border-none p-0 focus:ring-0 w-full placeholder:text-zinc-200"
+                        value={block.data.fullName || ""}
                         onChange={(e) =>
                           updateBlock(bIdx, {
                             ...block.data,
@@ -922,14 +879,7 @@ export default function ResumeCleanerPage() {
                         >
                           <MapPin size={16} />
                           <input
-                            className={clsx(
-                              "flex-1",
-                              "text-sm",
-                              "border-none",
-                              "p-0",
-                              "focus:ring-0",
-                              "placeholder-zinc-200",
-                            )}
+                            className="editor-input editor-input-heading"
                             value={block.data.location || ""}
                             onChange={(e) =>
                               updateBlock(bIdx, {
@@ -952,14 +902,7 @@ export default function ResumeCleanerPage() {
                         >
                           <ExternalLink size={16} />
                           <input
-                            className={clsx(
-                              "flex-1",
-                              "text-sm",
-                              "border-none",
-                              "p-0",
-                              "focus:ring-0",
-                              "placeholder-zinc-200",
-                            )}
+                            className="editor-input editor-input-heading"
                             value={
                               block.data.contacts.find((c: Contact) =>
                                 [
@@ -1000,308 +943,179 @@ export default function ResumeCleanerPage() {
                   )}
 
                   {block.type === "summary" && (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <textarea
-                        className={clsx(
-                          "w-full",
-                          "h-24",
-                          "text-sm",
-                          "leading-relaxed",
-                          "border-none",
-                          "p-0",
-                          "focus:ring-0",
-                          "resize-none",
-                          "placeholder-zinc-200",
-                          "text-zinc-700",
-                        )}
+                        className="w-full min-h-[100px] text-sm leading-relaxed border-zinc-200 focus:border-zinc-300 rounded-lg p-4 bg-zinc-50/30 editor-input text-zinc-700 placeholder:text-zinc-300"
                         value={block.data}
                         onChange={(e) => updateBlock(bIdx, e.target.value)}
-                        placeholder="Craft your high-level pitch..."
+                        placeholder="Briefly touch on your role and biggest value proposition..."
                       />
-                      <div
-                        className={clsx(
-                          "flex",
-                          "items-center",
-                          "gap-2",
-                          "p-3",
-                          "bg-zinc-50",
-                          "rounded-lg",
-                          "text-[11px]",
-                          "text-zinc-600",
-                          "font-medium",
-                          "border",
-                          "border-zinc-200",
-                        )}
-                      >
-                        <Info size={14} /> Note: Briefly touch on your role and
-                        biggest value proposition.
-                      </div>
                     </div>
                   )}
 
                   {block.type === "experience" && (
                     <div className="space-y-8">
-                      {block.data.map((item: ExperienceItem, iIdx: number) => (
-                        <div
-                          key={iIdx}
-                          className={clsx(
-                            "space-y-6",
-                            "relative",
-                            "group/item",
-                          )}
-                        >
+                      {((block.data as ExperienceItem[]) || []).map(
+                        (item: ExperienceItem, iIdx: number) => (
                           <div
-                            className={clsx(
-                              "grid",
-                              "grid-cols-1",
-                              "md:grid-cols-2",
-                              "gap-4",
-                            )}
+                            key={iIdx}
+                            className="space-y-6 relative group/item"
                           >
-                            <input
-                              className={clsx(
-                                "text-lg",
-                                "font-bold",
-                                "border-none",
-                                "p-0",
-                                "focus:ring-0",
-                                "placeholder-zinc-200",
-                                "text-zinc-900",
-                              )}
-                              value={item.jobTitle}
-                              onChange={(e) => {
-                                const newData = [...block.data];
-                                newData[iIdx] = {
-                                  ...item,
-                                  jobTitle: e.target.value,
-                                };
-                                updateBlock(bIdx, newData);
-                              }}
-                              placeholder="Title"
-                            />
-                            <div className="flex items-center justify-end gap-1">
-                              <input
-                                className={clsx(
-                                  "text-sm",
-                                  "font-bold",
-                                  "border-none",
-                                  "p-0",
-                                  "focus:ring-0",
-                                  "placeholder-zinc-200",
-                                  "text-zinc-500",
-                                  "text-right",
-                                  "w-20",
-                                )}
-                                value={item.startDate}
-                                onChange={(e) => {
-                                  const newData = [...block.data];
-                                  newData[iIdx] = {
-                                    ...item,
-                                    startDate: e.target.value,
-                                  };
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex-1 space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-[1fr_200px] gap-4">
+                                  <input
+                                    className="editor-input editor-input-heading"
+                                    value={item.jobTitle}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...(block.data as ExperienceItem[]),
+                                      ];
+                                      newData[iIdx] = {
+                                        ...item,
+                                        jobTitle: e.target.value,
+                                      };
+                                      updateBlock(bIdx, newData);
+                                    }}
+                                    placeholder="Title"
+                                  />
+                                  <div className="flex items-center justify-end gap-1">
+                                    <input
+                                      className="editor-input editor-input-subtext text-right w-20"
+                                      value={item.startDate}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...(block.data as ExperienceItem[]),
+                                        ];
+                                        newData[iIdx] = {
+                                          ...item,
+                                          startDate: e.target.value,
+                                        };
+                                        updateBlock(bIdx, newData);
+                                      }}
+                                      placeholder="Start"
+                                    />
+                                    <span className="mx-2 text-zinc-300">
+                                      —
+                                    </span>
+                                    <input
+                                      className="editor-input editor-input-subtext w-20"
+                                      value={item.endDate || ""}
+                                      onChange={(e) => {
+                                        const newData = [
+                                          ...(block.data as ExperienceItem[]),
+                                        ];
+                                        newData[iIdx] = {
+                                          ...item,
+                                          endDate: e.target.value,
+                                          isCurrent:
+                                            e.target.value.toLowerCase() ===
+                                            "present",
+                                        };
+                                        updateBlock(bIdx, newData);
+                                      }}
+                                      placeholder="End"
+                                    />
+                                  </div>
+                                </div>
+                                <input
+                                  className="editor-input editor-input-subtext"
+                                  value={item.companyName}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...(block.data as ExperienceItem[]),
+                                    ];
+                                    newData[iIdx] = {
+                                      ...item,
+                                      companyName: e.target.value,
+                                    };
+                                    updateBlock(bIdx, newData);
+                                  }}
+                                  placeholder="Company"
+                                />
+                              </div>
+                              <button
+                                onClick={() => {
+                                  const newData = (
+                                    block.data as ExperienceItem[]
+                                  ).filter((_, i) => i !== iIdx);
                                   updateBlock(bIdx, newData);
                                 }}
-                                placeholder="Start Date"
-                              />
-                              <span className={clsx("mx-2", "text-zinc-300")}>
-                                —
-                              </span>
-                              <input
-                                className={clsx(
-                                  "text-sm",
-                                  "font-bold",
-                                  "border-none",
-                                  "p-0",
-                                  "focus:ring-0",
-                                  "placeholder-zinc-200",
-                                  "text-zinc-500",
-                                  "w-20",
-                                )}
-                                value={item.endDate || ""}
-                                onChange={(e) => {
-                                  const newData = [...block.data];
-                                  newData[iIdx] = {
-                                    ...item,
-                                    endDate: e.target.value,
-                                    isCurrent:
-                                      e.target.value.toLowerCase() ===
-                                      "present",
-                                  };
+                                className="p-1.5 text-zinc-300 hover:text-red-400 hover:bg-red-50 rounded-md transition-all cursor-pointer opacity-0 group-hover/item:opacity-100 shrink-0"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+
+                            <div className="space-y-4">
+                              {(item.bullets || []).map((bullet, bulIdx) => (
+                                <div
+                                  key={bulIdx}
+                                  className="flex gap-3 items-start group/bullet"
+                                >
+                                  <div className="shrink-0 text-zinc-400 text-lg leading-none mt-0.5">
+                                    •
+                                  </div>
+                                  <textarea
+                                    className="editor-input editor-input-subtext min-h-6 h-auto"
+                                    value={bullet}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...(block.data as ExperienceItem[]),
+                                      ];
+                                      newData[iIdx].bullets[bulIdx] =
+                                        e.target.value;
+                                      updateBlock(bIdx, newData);
+                                    }}
+                                    placeholder="Accomplishment..."
+                                  />
+                                  <button
+                                    onClick={() => {
+                                      const newData = [
+                                        ...(block.data as ExperienceItem[]),
+                                      ];
+                                      newData[iIdx].bullets =
+                                        item.bullets.filter(
+                                          (_, k) => k !== bulIdx,
+                                        );
+                                      updateBlock(bIdx, newData);
+                                    }}
+                                    className="p-1.5 text-zinc-300 hover:text-red-400 hover:bg-red-50 rounded-md transition-all cursor-pointer opacity-0 group-hover/bullet:opacity-100"
+                                  >
+                                    <Trash2 size={13} />
+                                  </button>
+                                </div>
+                              ))}
+                              <button
+                                onClick={() => {
+                                  const newData = [
+                                    ...(block.data as ExperienceItem[]),
+                                  ];
+                                  newData[iIdx].bullets.push("");
                                   updateBlock(bIdx, newData);
                                 }}
-                                placeholder="End Date"
-                              />
+                                className="ml-8 py-1.5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 transition-colors flex items-center gap-1.5 cursor-pointer"
+                              >
+                                <Plus size={10} /> Add Bullet
+                              </button>
                             </div>
                           </div>
-                          <input
-                            className={clsx(
-                              "w-full",
-                              "text-xs",
-                              "font-bold",
-                              "text-zinc-400",
-                              "border-none",
-                              "p-0",
-                              "focus:ring-0",
-                            )}
-                            value={item.companyName}
-                            onChange={(e) => {
-                              const newData = [...block.data];
-                              newData[iIdx] = {
-                                ...item,
-                                companyName: e.target.value,
-                              };
-                              updateBlock(bIdx, newData);
-                            }}
-                            placeholder="Company"
-                          />
-
-                          <div className="space-y-4">
-                            {item.bullets.map((bullet, bulIdx) => {
-                              return (
-                                <div key={bulIdx} className="space-y-2">
-                                  <div
-                                    className={clsx(
-                                      "flex",
-                                      "gap-3",
-                                      "items-start",
-                                      "group/bullet",
-                                    )}
-                                  >
-                                    <div
-                                      className={clsx(
-                                        "shrink-0",
-                                        "text-zinc-400",
-                                        "text-lg",
-                                        "leading-none",
-                                        "mt-0.5",
-                                      )}
-                                    >
-                                      •
-                                    </div>
-                                    <textarea
-                                      className={clsx(
-                                        "flex-1",
-                                        "text-sm",
-                                        "border-none",
-                                        "p-0",
-                                        "focus:ring-0",
-                                        "resize-none",
-                                        "min-h-6",
-                                        "bg-transparent",
-                                        "text-zinc-700",
-                                      )}
-                                      value={bullet}
-                                      onChange={(e) => {
-                                        const newData = [...block.data];
-                                        newData[iIdx].bullets[bulIdx] =
-                                          e.target.value;
-                                        updateBlock(bIdx, newData);
-                                      }}
-                                    />
-                                    <button
-                                      onClick={() => {
-                                        const newData = [...block.data];
-                                        newData[iIdx].bullets =
-                                          item.bullets.filter(
-                                            (_, k) => k !== bulIdx,
-                                          );
-                                        updateBlock(bIdx, newData);
-                                      }}
-                                      className={clsx(
-                                        "opacity-0",
-                                        "group-hover/bullet:opacity-100",
-                                        "p-1",
-                                        "text-zinc-300",
-                                        "hover:text-red-500",
-                                        "transition-all",
-                                        "cursor-pointer",
-                                      )}
-                                    >
-                                      <Trash2 size={12} />
-                                    </button>
-                                  </div>
-                                  {/* Hints hidden as per user request */}
-                                </div>
-                              );
-                            })}
-                            <button
-                              onClick={() => {
-                                const newData = [...block.data];
-                                newData[iIdx].bullets.push("");
-                                updateBlock(bIdx, newData);
-                              }}
-                              className={clsx(
-                                "ml-[26px]",
-                                "text-[10px]",
-                                "font-black",
-                                "uppercase",
-                                "tracking-widest",
-                                "text-zinc-500",
-                                "hover:text-zinc-900",
-                                "transition-colors",
-                                "flex",
-                                "items-center",
-                                "gap-1.5",
-                                "cursor-pointer",
-                              )}
-                            >
-                              <Plus size={10} /> Add Bullet
-                            </button>
-                          </div>
-
-                          <button
-                            onClick={() => {
-                              const newData = block.data.filter(
-                                (_, i) => i !== iIdx,
-                              );
-                              updateBlock(bIdx, newData);
-                            }}
-                            className={clsx(
-                              "absolute",
-                              "-right-2",
-                              "top-0",
-                              "opacity-0",
-                              "group-hover/item:opacity-100",
-                              "p-2",
-                              "text-zinc-300",
-                              "hover:text-red-400",
-                              "transition-all",
-                              "cursor-pointer",
-                              "z-10",
-                            )}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      ))}
+                        ),
+                      )}
                       <button
-                        onClick={() => {
-                          const newItem: ExperienceItem = {
-                            jobTitle: "",
-                            companyName: "",
-                            startDate: "",
-                            endDate: "",
-                            location: "",
-                            isCurrent: false,
-                            bullets: [""],
-                          };
-                          updateBlock(bIdx, [...block.data, newItem]);
-                        }}
-                        className={clsx(
-                          "w-full",
-                          "py-3",
-                          "border-2",
-                          "border-dashed",
-                          "border-zinc-200",
-                          "rounded-md",
-                          "text-[11px]",
-                          "font-medium",
-                          "text-zinc-400",
-                          "hover:text-zinc-900",
-                          "hover:border-zinc-300",
-                          "transition-all",
-                          "cursor-pointer",
-                        )}
+                        onClick={() =>
+                          updateBlock(bIdx, [
+                            ...(block.data as ExperienceItem[]),
+                            {
+                              jobTitle: "New Role",
+                              companyName: "Company",
+                              location: "City",
+                              startDate: "202X",
+                              bullets: [""],
+                            },
+                          ])
+                        }
+                        className="w-full py-2.5 border border-dashed border-zinc-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50/50 transition-all cursor-pointer"
                       >
                         + New Experience Item
                       </button>
@@ -1310,234 +1124,142 @@ export default function ResumeCleanerPage() {
 
                   {block.type === "projects" && (
                     <div className="space-y-8">
-                      {block.data.map((item: ProjectItem, iIdx: number) => (
-                        <div
-                          key={iIdx}
-                          className={clsx(
-                            "space-y-6",
-                            "relative",
-                            "group/item",
-                          )}
-                        >
+                      {((block.data as ProjectItem[]) || []).map(
+                        (item: ProjectItem, iIdx: number) => (
                           <div
-                            className={clsx(
-                              "grid",
-                              "grid-cols-1",
-                              "md:grid-cols-2",
-                              "gap-4",
-                            )}
+                            key={iIdx}
+                            className="space-y-6 relative group/item"
                           >
-                            <input
-                              className={clsx(
-                                "text-lg",
-                                "font-bold",
-                                "border-none",
-                                "p-0",
-                                "focus:ring-0",
-                                "placeholder-zinc-200",
-                                "text-zinc-900",
-                              )}
-                              value={item.name}
-                              onChange={(e) => {
-                                const newData = [...block.data];
-                                newData[iIdx] = {
-                                  ...item,
-                                  name: e.target.value,
-                                };
-                                updateBlock(bIdx, newData);
-                              }}
-                              placeholder="Project Name"
-                            />
-                            <div className="md:text-right">
-                              <input
-                                className={clsx(
-                                  "text-sm",
-                                  "font-bold",
-                                  "border-none",
-                                  "p-0",
-                                  "focus:ring-0",
-                                  "placeholder-zinc-200",
-                                  "text-zinc-500",
-                                )}
-                                value={item.dates || ""}
-                                onChange={(e) => {
-                                  const newData = [...block.data];
-                                  newData[iIdx] = {
-                                    ...item,
-                                    dates: e.target.value,
-                                  };
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex-1 space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-[1fr_200px] gap-4">
+                                  <input
+                                    className="editor-input editor-input-heading"
+                                    value={item.name}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...(block.data as ProjectItem[]),
+                                      ];
+                                      newData[iIdx] = {
+                                        ...item,
+                                        name: e.target.value,
+                                      };
+                                      updateBlock(bIdx, newData);
+                                    }}
+                                    placeholder="Project Name"
+                                  />
+                                  <input
+                                    className="editor-input editor-input-subtext text-right w-full"
+                                    value={item.dates || ""}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...(block.data as ProjectItem[]),
+                                      ];
+                                      newData[iIdx] = {
+                                        ...item,
+                                        dates: e.target.value,
+                                      };
+                                      updateBlock(bIdx, newData);
+                                    }}
+                                    placeholder="Dates"
+                                  />
+                                </div>
+                                <input
+                                  className="editor-input editor-input-subtext"
+                                  value={item.description || ""}
+                                  onChange={(e) => {
+                                    const newData = [
+                                      ...(block.data as ProjectItem[]),
+                                    ];
+                                    newData[iIdx] = {
+                                      ...item,
+                                      description: e.target.value,
+                                    };
+                                    updateBlock(bIdx, newData);
+                                  }}
+                                  placeholder="Brief description..."
+                                />
+                              </div>
+                              <button
+                                onClick={() => {
+                                  const newData = (
+                                    block.data as ProjectItem[]
+                                  ).filter((_, i) => i !== iIdx);
                                   updateBlock(bIdx, newData);
                                 }}
-                                placeholder="Dates"
-                              />
+                                className="p-1.5 text-zinc-300 hover:text-red-400 hover:bg-red-50 rounded-md transition-all cursor-pointer opacity-0 group-hover/item:opacity-100 shrink-0"
+                              >
+                                <Trash2 size={13} />
+                              </button>
+                            </div>
+
+                            <div className="space-y-4">
+                              {(item.bullets || []).map((bullet, bulIdx) => (
+                                <div
+                                  key={bulIdx}
+                                  className="flex gap-3 items-start group/bullet"
+                                >
+                                  <div className="shrink-0 text-zinc-400 text-lg leading-none mt-0.5">
+                                    •
+                                  </div>
+                                  <textarea
+                                    className="editor-input editor-input-subtext min-h-6 h-auto"
+                                    value={bullet}
+                                    onChange={(e) => {
+                                      const newData = [
+                                        ...(block.data as ProjectItem[]),
+                                      ];
+                                      newData[iIdx].bullets[bulIdx] =
+                                        e.target.value;
+                                      updateBlock(bIdx, newData);
+                                    }}
+                                    placeholder="Feature or achievement..."
+                                  />
+                                  <button
+                                    onClick={() => {
+                                      const newData = [
+                                        ...(block.data as ProjectItem[]),
+                                      ];
+                                      newData[iIdx].bullets =
+                                        item.bullets.filter(
+                                          (_, k) => k !== bulIdx,
+                                        );
+                                      updateBlock(bIdx, newData);
+                                    }}
+                                    className="p-1.5 text-zinc-300 hover:text-red-400 hover:bg-red-50 rounded-md transition-all cursor-pointer opacity-0 group-hover/bullet:opacity-100"
+                                  >
+                                    <Trash2 size={13} />
+                                  </button>
+                                </div>
+                              ))}
+                              <button
+                                onClick={() => {
+                                  const newData = [
+                                    ...(block.data as ProjectItem[]),
+                                  ];
+                                  newData[iIdx].bullets.push("");
+                                  updateBlock(bIdx, newData);
+                                }}
+                                className="ml-8 py-1.5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 transition-colors flex items-center gap-1.5 cursor-pointer"
+                              >
+                                <Plus size={10} /> Add Bullet
+                              </button>
                             </div>
                           </div>
-                          <input
-                            className={clsx(
-                              "w-full",
-                              "text-xs",
-                              "font-bold",
-                              "tracking-widest",
-                              "text-zinc-400",
-                              "border-none",
-                              "p-0",
-                              "focus:ring-0",
-                            )}
-                            value={item.description || ""}
-                            onChange={(e) => {
-                              const newData = [...block.data];
-                              newData[iIdx] = {
-                                ...item,
-                                description: e.target.value,
-                              };
-                              updateBlock(bIdx, newData);
-                            }}
-                            placeholder="Project Description"
-                          />
-
-                          <div className="space-y-4">
-                            {item.bullets.map((bullet, bulIdx) => {
-                              return (
-                                <div key={bulIdx} className="space-y-2">
-                                  <div
-                                    className={clsx(
-                                      "flex",
-                                      "gap-3",
-                                      "items-start",
-                                      "group/bullet",
-                                    )}
-                                  >
-                                    <div
-                                      className={clsx(
-                                        "shrink-0",
-                                        "text-zinc-400",
-                                        "text-lg",
-                                        "leading-none",
-                                        "mt-0.5",
-                                      )}
-                                    >
-                                      •
-                                    </div>
-                                    <textarea
-                                      className={clsx(
-                                        "flex-1",
-                                        "text-sm",
-                                        "border-none",
-                                        "p-0",
-                                        "focus:ring-0",
-                                        "resize-none",
-                                        "min-h-6",
-                                        "bg-transparent",
-                                        "text-zinc-700",
-                                      )}
-                                      value={bullet}
-                                      onChange={(e) => {
-                                        const newData = [...block.data];
-                                        newData[iIdx].bullets[bulIdx] =
-                                          e.target.value;
-                                        updateBlock(bIdx, newData);
-                                      }}
-                                    />
-                                    <button
-                                      onClick={() => {
-                                        const newData = [...block.data];
-                                        newData[iIdx].bullets =
-                                          item.bullets.filter(
-                                            (_, k) => k !== bulIdx,
-                                          );
-                                        updateBlock(bIdx, newData);
-                                      }}
-                                      className={clsx(
-                                        "opacity-0",
-                                        "group-hover/bullet:opacity-100",
-                                        "p-1",
-                                        "text-zinc-300",
-                                        "hover:text-red-500",
-                                        "transition-all",
-                                        "cursor-pointer",
-                                      )}
-                                    >
-                                      <Trash2 size={12} />
-                                    </button>
-                                  </div>
-                                  {/* Hints hidden as per user request */}
-                                </div>
-                              );
-                            })}
-                            <button
-                              onClick={() => {
-                                const newData = [...block.data];
-                                newData[iIdx].bullets.push("");
-                                updateBlock(bIdx, newData);
-                              }}
-                              className={clsx(
-                                "ml-[26px]",
-                                "text-[10px]",
-                                "font-black",
-                                "uppercase",
-                                "tracking-widest",
-                                "text-zinc-500",
-                                "hover:text-zinc-900",
-                                "transition-colors",
-                                "flex",
-                                "items-center",
-                                "gap-1.5",
-                                "cursor-pointer",
-                              )}
-                            >
-                              <Plus size={10} /> Add Bullet
-                            </button>
-                          </div>
-
-                          <button
-                            onClick={() => {
-                              const newData = block.data.filter(
-                                (_, i) => i !== iIdx,
-                              );
-                              updateBlock(bIdx, newData);
-                            }}
-                            className={clsx(
-                              "absolute",
-                              "-right-2",
-                              "top-0",
-                              "opacity-0",
-                              "group-hover/item:opacity-100",
-                              "p-2",
-                              "text-zinc-300",
-                              "hover:text-red-400",
-                              "transition-all",
-                              "cursor-pointer",
-                              "z-10",
-                            )}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      ))}
+                        ),
+                      )}
                       <button
-                        onClick={() => {
-                          const newItem: ProjectItem = {
-                            name: "New Project",
-                            description: "Summary",
-                            bullets: [""],
-                          };
-                          updateBlock(bIdx, [...block.data, newItem]);
-                        }}
-                        className={clsx(
-                          "w-full",
-                          "py-3",
-                          "border-2",
-                          "border-dashed",
-                          "border-zinc-200",
-                          "rounded-md",
-                          "text-[11px]",
-                          "font-medium",
-                          "text-zinc-400",
-                          "hover:text-zinc-900",
-                          "hover:border-zinc-300",
-                          "transition-all",
-                          "cursor-pointer",
-                        )}
+                        onClick={() =>
+                          updateBlock(bIdx, [
+                            ...(block.data as ProjectItem[]),
+                            {
+                              name: "New Project",
+                              description: "Summary",
+                              bullets: [""],
+                            },
+                          ])
+                        }
+                        className="w-full py-2.5 border border-dashed border-zinc-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50/50 transition-all cursor-pointer"
                       >
                         + New Project Item
                       </button>
@@ -1546,29 +1268,14 @@ export default function ResumeCleanerPage() {
 
                   {block.type === "skills" && (
                     <div className="space-y-8">
-                      {block.data.map((group, iIdx) => (
+                      {block.data.map((group: SkillGroup, iIdx: number) => (
                         <div
                           key={iIdx}
-                          className={clsx("space-y-3", "group/skill")}
+                          className="p-4 bg-zinc-50/30 border border-zinc-100 rounded-xl space-y-3 group/skill relative transition-all hover:border-zinc-200"
                         >
-                          <div
-                            className={clsx(
-                              "flex",
-                              "items-center",
-                              "justify-between",
-                            )}
-                          >
+                          <div className="flex items-center justify-between gap-4">
                             <input
-                              className={clsx(
-                                "text-[10px]",
-                                "font-black",
-                                "tracking-[0.2em]",
-                                "text-zinc-400",
-                                "border-none",
-                                "p-0",
-                                "focus:ring-0",
-                                "w-full",
-                              )}
+                              className="editor-input editor-input-heading"
                               value={group.category}
                               onChange={(e) => {
                                 const newData = [...block.data];
@@ -1578,40 +1285,22 @@ export default function ResumeCleanerPage() {
                                 };
                                 updateBlock(bIdx, newData);
                               }}
+                              placeholder="Skill Category (e.g. Languages)"
                             />
                             <button
                               onClick={() => {
-                                const newData = block.data.filter(
-                                  (_, i) => i !== iIdx,
-                                );
+                                const newData = (
+                                  block.data as SkillGroup[]
+                                ).filter((_, i) => i !== iIdx);
                                 updateBlock(bIdx, newData);
                               }}
-                              className={clsx(
-                                "opacity-0",
-                                "group-hover/skill:opacity-100",
-                                "p-1",
-                                "text-zinc-300",
-                                "hover:text-red-400",
-                                "transition-all",
-                              )}
+                              className="p-1.5 text-zinc-300 hover:text-red-400 hover:bg-red-50 rounded-md transition-all cursor-pointer opacity-0 group-hover/skill:opacity-100"
                             >
-                              <Trash2 size={12} />
+                              <Trash2 size={13} />
                             </button>
                           </div>
                           <textarea
-                            className={clsx(
-                              "w-full",
-                              "text-sm",
-                              "font-medium",
-                              "border-none",
-                              "p-0",
-                              "focus:ring-0",
-                              "text-zinc-700",
-                              "bg-transparent",
-                              "resize-none",
-                              "overflow-hidden",
-                              "h-6",
-                            )}
+                            className="editor-input text-xs text-zinc-500 font-normal leading-relaxed resize-none h-16"
                             value={group.skills.join(", ")}
                             onChange={(e) => {
                               const newData = [...block.data];
@@ -1634,22 +1323,7 @@ export default function ResumeCleanerPage() {
                             { category: "Category", skills: [] },
                           ])
                         }
-                        className={clsx(
-                          "w-full",
-                          "py-3",
-                          "border",
-                          "border-dashed",
-                          "border-zinc-100",
-                          "rounded-lg",
-                          "text-[10px]",
-                          "font-black",
-                          "uppercase",
-                          "tracking-widest",
-                          "text-zinc-400",
-                          "hover:text-zinc-600",
-                          "transition-all",
-                          "cursor-pointer",
-                        )}
+                        className="w-full py-2.5 border border-dashed border-zinc-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50/50 transition-all cursor-pointer"
                       >
                         + New Skills Group
                       </button>
@@ -1667,104 +1341,62 @@ export default function ResumeCleanerPage() {
                             "relative",
                           )}
                         >
-                          <div
-                            className={clsx(
-                              "grid",
-                              "grid-cols-1",
-                              "md:grid-cols-[1fr_100px]",
-                              "gap-4",
-                            )}
-                          >
-                            <input
-                              className={clsx(
-                                "text-lg",
-                                "font-bold",
-                                "border-none",
-                                "p-0",
-                                "focus:ring-0",
-                                "placeholder-zinc-200",
-                                "text-zinc-900",
-                              )}
-                              value={item.institution}
-                              onChange={(e) => {
-                                const newData = [...block.data];
-                                newData[iIdx] = {
-                                  ...item,
-                                  institution: e.target.value,
-                                };
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1 space-y-4">
+                              <div className="grid grid-cols-1 md:grid-cols-[1fr_100px] gap-4">
+                                <input
+                                  className="editor-input editor-input-heading"
+                                  value={item.institution}
+                                  onChange={(e) => {
+                                    const newData = [...block.data];
+                                    newData[iIdx] = {
+                                      ...item,
+                                      institution: e.target.value,
+                                    };
+                                    updateBlock(bIdx, newData);
+                                  }}
+                                  placeholder="Institution Name"
+                                />
+                                <input
+                                  className="editor-input editor-input-subtext text-right w-20"
+                                  value={item.graduationYear}
+                                  onChange={(e) => {
+                                    const newData = [...block.data];
+                                    newData[iIdx] = {
+                                      ...item,
+                                      graduationYear: e.target.value,
+                                    };
+                                    updateBlock(bIdx, newData);
+                                  }}
+                                  placeholder="Year"
+                                />
+                              </div>
+                              <input
+                                className="editor-input editor-input-subtext"
+                                value={item.degree}
+                                onChange={(e) => {
+                                  const newData = [...block.data];
+                                  newData[iIdx] = {
+                                    ...item,
+                                    degree: e.target.value,
+                                  };
+                                  updateBlock(bIdx, newData);
+                                }}
+                                placeholder="Degree / Course"
+                              />
+                            </div>
+                            <button
+                              onClick={() => {
+                                const newData = block.data.filter(
+                                  (_, i) => i !== iIdx,
+                                );
                                 updateBlock(bIdx, newData);
                               }}
-                              placeholder="Institution Name"
-                            />
-                            <input
-                              className={clsx(
-                                "md:text-right",
-                                "text-sm",
-                                "font-bold",
-                                "border-none",
-                                "p-0",
-                                "focus:ring-0",
-                                "placeholder-zinc-200",
-                                "text-zinc-500",
-                              )}
-                              value={item.graduationYear}
-                              onChange={(e) => {
-                                const newData = [...block.data];
-                                newData[iIdx] = {
-                                  ...item,
-                                  graduationYear: e.target.value,
-                                };
-                                updateBlock(bIdx, newData);
-                              }}
-                              placeholder="Year"
-                            />
+                              className="p-1.5 text-zinc-300 hover:text-red-400 hover:bg-red-50 rounded-md transition-all cursor-pointer shrink-0 opacity-0 group-hover/item:opacity-100"
+                            >
+                              <Trash2 size={13} />
+                            </button>
                           </div>
-                          <input
-                            className={clsx(
-                              "w-full",
-                              "text-sm",
-                              "font-medium",
-                              "italic",
-                              "text-zinc-500",
-                              "border-none",
-                              "p-0",
-                              "focus:ring-0",
-                              "placeholder-zinc-200",
-                            )}
-                            value={item.degree}
-                            onChange={(e) => {
-                              const newData = [...block.data];
-                              newData[iIdx] = {
-                                ...item,
-                                degree: e.target.value,
-                              };
-                              updateBlock(bIdx, newData);
-                            }}
-                            placeholder="Type of Degree / Major"
-                          />
-                          <button
-                            onClick={() => {
-                              const newData = block.data.filter(
-                                (_, i) => i !== iIdx,
-                              );
-                              updateBlock(bIdx, newData);
-                            }}
-                            className={clsx(
-                              "absolute",
-                              "-right-2",
-                              "top-0",
-                              "opacity-0",
-                              "group-hover/item:opacity-100",
-                              "p-2",
-                              "text-zinc-300",
-                              "hover:text-red-400",
-                              "transition-all",
-                              "cursor-pointer",
-                              "z-10",
-                            )}
-                          >
-                            <Trash2 size={14} />
-                          </button>
                         </div>
                       ))}
                       <button
@@ -1778,23 +1410,7 @@ export default function ResumeCleanerPage() {
                             },
                           ])
                         }
-                        className={clsx(
-                          "w-full",
-                          "py-4",
-                          "border-2",
-                          "border-dashed",
-                          "border-zinc-100",
-                          "rounded-lg",
-                          "text-[11px]",
-                          "font-black",
-                          "uppercase",
-                          "tracking-widest",
-                          "text-zinc-400",
-                          "hover:text-zinc-600",
-                          "hover:border-zinc-200",
-                          "transition-all",
-                          "cursor-pointer",
-                        )}
+                        className="w-full py-2.5 border border-dashed border-zinc-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50/50 transition-all cursor-pointer"
                       >
                         + New Education
                       </button>
@@ -1802,7 +1418,7 @@ export default function ResumeCleanerPage() {
                   )}
 
                   {block.type === "languages" && (
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                       {block.data.map((item, iIdx) => (
                         <div
                           key={iIdx}
@@ -1874,17 +1490,19 @@ export default function ResumeCleanerPage() {
                               "absolute",
                               "-right-8",
                               "top-1/2",
-                              "-tranzinc-y-1/2",
-                              "opacity-0",
-                              "group-hover/item:opacity-100",
-                              "p-2",
+                              "-translate-y-1/2",
+                              "p-1.5",
                               "text-zinc-300",
                               "hover:text-red-400",
+                              "hover:bg-red-50",
+                              "rounded-md",
                               "transition-all",
                               "cursor-pointer",
+                              "opacity-0",
+                              "group-hover/item:opacity-100",
                             )}
                           >
-                            <Trash2 size={12} />
+                            <Trash2 size={13} />
                           </button>
                         </div>
                       ))}
@@ -1894,25 +1512,11 @@ export default function ResumeCleanerPage() {
                             ...block.data,
                             {
                               language: "New Language",
-                              proficiency: "Proficiency",
+                              proficiency: "Basic",
                             },
                           ])
                         }
-                        className={clsx(
-                          "w-full",
-                          "py-3",
-                          "border-2",
-                          "border-dashed",
-                          "border-zinc-200",
-                          "rounded-md",
-                          "text-[11px]",
-                          "font-medium",
-                          "text-zinc-400",
-                          "hover:text-zinc-900",
-                          "hover:border-zinc-300",
-                          "transition-all",
-                          "cursor-pointer",
-                        )}
+                        className="w-full py-2.5 border border-dashed border-zinc-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50/50 transition-all cursor-pointer"
                       >
                         + New Language
                       </button>
@@ -1920,84 +1524,61 @@ export default function ResumeCleanerPage() {
                   )}
 
                   {block.type === "certifications" && (
-                    <div className="space-y-6">
-                      {block.data.map((item, iIdx) => (
-                        <div
-                          key={iIdx}
-                          className={clsx(
-                            "flex",
-                            "gap-4",
-                            "items-center",
-                            "group/item",
-                            "relative",
-                          )}
-                        >
-                          <input
-                            className={clsx(
-                              "flex-1",
-                              "font-bold",
-                              "text-sm",
-                              "border-none",
-                              "p-0",
-                              "focus:ring-0",
-                              "text-zinc-900",
-                            )}
-                            value={item.name}
-                            onChange={(e) => {
-                              const newData = [...block.data];
-                              newData[iIdx] = { ...item, name: e.target.value };
-                              updateBlock(bIdx, newData);
-                            }}
-                            placeholder="Certification Name"
-                          />
-                          <input
-                            className={clsx(
-                              "w-24",
-                              "text-right",
-                              "text-xs",
-                              "font-bold",
-                              "text-zinc-400",
-                              "border-none",
-                              "p-0",
-                              "focus:ring-0",
-                            )}
-                            value={item.year}
-                            onChange={(e) => {
-                              const newData = [...block.data];
-                              newData[iIdx] = { ...item, year: e.target.value };
-                              updateBlock(bIdx, newData);
-                            }}
-                            placeholder="Year"
-                          />
-                          <button
-                            onClick={() => {
-                              const newData = block.data.filter(
-                                (_, i) => i !== iIdx,
-                              );
-                              updateBlock(bIdx, newData);
-                            }}
-                            className={clsx(
-                              "absolute",
-                              "-right-8",
-                              "top-1/2",
-                              "-tranzinc-y-1/2",
-                              "opacity-0",
-                              "group-hover/item:opacity-100",
-                              "p-2",
-                              "text-zinc-300",
-                              "hover:text-red-400",
-                              "transition-all",
-                              "cursor-pointer",
-                            )}
+                    <div className="space-y-4">
+                      {((block.data as CertificationItem[]) || []).map(
+                        (item: CertificationItem, iIdx: number) => (
+                          <div
+                            key={iIdx}
+                            className="flex items-center gap-4 group/item relative"
                           >
-                            <Trash2 size={12} />
-                          </button>
-                        </div>
-                      ))}
+                            <input
+                              className="editor-input editor-input-heading flex-1"
+                              value={item.name}
+                              onChange={(e) => {
+                                const newData = [
+                                  ...(block.data as CertificationItem[]),
+                                ];
+                                newData[iIdx] = {
+                                  ...item,
+                                  name: e.target.value,
+                                };
+                                updateBlock(bIdx, newData);
+                              }}
+                              placeholder="Certification Name"
+                            />
+                            <input
+                              className="editor-input editor-input-subtext text-right w-24"
+                              value={item.issuer || ""}
+                              onChange={(e) => {
+                                const newData = [
+                                  ...(block.data as CertificationItem[]),
+                                ];
+                                newData[iIdx] = {
+                                  ...item,
+                                  issuer: e.target.value,
+                                };
+                                updateBlock(bIdx, newData);
+                              }}
+                              placeholder="Issuer"
+                            />
+                            <button
+                              onClick={() => {
+                                const newData = (
+                                  block.data as CertificationItem[]
+                                ).filter((_, i) => i !== iIdx);
+                                updateBlock(bIdx, newData);
+                              }}
+                              className="p-1.5 text-zinc-300 hover:text-red-400 hover:bg-red-50 rounded-md transition-all cursor-pointer opacity-0 group-hover/item:opacity-100"
+                            >
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        ),
+                      )}
                       <button
                         onClick={() =>
                           updateBlock(bIdx, [
-                            ...block.data,
+                            ...(block.data as CertificationItem[]),
                             {
                               name: "New Certification",
                               issuer: "Issuer",
@@ -2005,21 +1586,7 @@ export default function ResumeCleanerPage() {
                             },
                           ])
                         }
-                        className={clsx(
-                          "w-full",
-                          "py-3",
-                          "border-2",
-                          "border-dashed",
-                          "border-zinc-200",
-                          "rounded-md",
-                          "text-[11px]",
-                          "font-medium",
-                          "text-zinc-400",
-                          "hover:text-zinc-900",
-                          "hover:border-zinc-300",
-                          "transition-all",
-                          "cursor-pointer",
-                        )}
+                        className="w-full py-2.5 border border-dashed border-zinc-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50/50 transition-all cursor-pointer"
                       >
                         + New Certification
                       </button>
@@ -2029,18 +1596,20 @@ export default function ResumeCleanerPage() {
                   {block.type === "personal" && (
                     <div className="space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
-                        {(Array.isArray(block.data) ? block.data : []).map(
-                          (item: any, iIdx: number) => (
+                        {((block.data as PersonalDetailItem[]) || []).map(
+                          (item: PersonalDetailItem, iIdx: number) => (
                             <div
                               key={iIdx}
                               className="space-y-1.5 group/pitem relative"
                             >
                               <div className="flex items-center justify-between">
                                 <input
-                                  className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider border-none p-0 focus:ring-0 bg-transparent w-full"
-                                  value={item.label}
+                                  className="editor-label bg-transparent w-full mb-0"
+                                  value={item.label || ""}
                                   onChange={(e) => {
-                                    const newData = [...block.data];
+                                    const newData = [
+                                      ...(block.data as PersonalDetailItem[]),
+                                    ];
                                     newData[iIdx] = {
                                       ...item,
                                       label: e.target.value,
@@ -2051,21 +1620,23 @@ export default function ResumeCleanerPage() {
                                 />
                                 <button
                                   onClick={() => {
-                                    const newData = block.data.filter(
-                                      (_: any, i: number) => i !== iIdx,
-                                    );
+                                    const newData = (
+                                      block.data as PersonalDetailItem[]
+                                    ).filter((_, i) => i !== iIdx);
                                     updateBlock(bIdx, newData);
                                   }}
-                                  className="opacity-0 group-hover/pitem:opacity-100 p-1 text-zinc-300 hover:text-red-400 transition-all cursor-pointer"
+                                  className="p-1.5 text-zinc-300 hover:text-red-400 hover:bg-red-50 rounded-md transition-all cursor-pointer opacity-0 group-hover/pitem:opacity-100 -mr-2"
                                 >
-                                  <Trash2 size={12} />
+                                  <Trash2 size={13} />
                                 </button>
                               </div>
                               <input
                                 className="w-full text-sm font-medium border-none p-0 focus:ring-0 bg-transparent text-zinc-900"
-                                value={item.value}
+                                value={item.value || ""}
                                 onChange={(e) => {
-                                  const newData = [...block.data];
+                                  const newData = [
+                                    ...(block.data as PersonalDetailItem[]),
+                                  ];
                                   newData[iIdx] = {
                                     ...item,
                                     value: e.target.value,
@@ -2081,25 +1652,11 @@ export default function ResumeCleanerPage() {
                       <button
                         onClick={() =>
                           updateBlock(bIdx, [
-                            ...block.data,
+                            ...(block.data as PersonalDetailItem[]),
                             { label: "New Field", value: "" },
                           ])
                         }
-                        className={clsx(
-                          "w-full",
-                          "py-3",
-                          "border-2",
-                          "border-dashed",
-                          "border-zinc-200",
-                          "rounded-md",
-                          "text-[11px]",
-                          "font-medium",
-                          "text-zinc-400",
-                          "hover:text-zinc-900",
-                          "hover:border-zinc-300",
-                          "transition-all",
-                          "cursor-pointer",
-                        )}
+                        className="w-full py-2.5 border border-dashed border-zinc-200 rounded-xl text-[10px] font-bold uppercase tracking-widest text-zinc-400 hover:text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50/50 transition-all cursor-pointer"
                       >
                         + Add Personal Detail Field
                       </button>
@@ -2107,18 +1664,9 @@ export default function ResumeCleanerPage() {
                   )}
 
                   {block.type === "custom" && (
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                       <input
-                        className={clsx(
-                          "w-full",
-                          "font-black",
-                          "tracking-[0.2em]",
-                          "text-[10px]",
-                          "text-zinc-400",
-                          "border-none",
-                          "p-0",
-                          "focus:ring-0",
-                        )}
+                        className="editor-label"
                         value={block.data.title}
                         onChange={(e) =>
                           updateBlock(bIdx, {
@@ -2129,19 +1677,8 @@ export default function ResumeCleanerPage() {
                         placeholder="SECTION TITLE"
                       />
                       <textarea
-                        className={clsx(
-                          "w-full",
-                          "h-32",
-                          "text-sm",
-                          "leading-relaxed",
-                          "border-none",
-                          "p-0",
-                          "focus:ring-0",
-                          "resize-none",
-                          "placeholder-zinc-200",
-                          "text-zinc-700",
-                        )}
-                        value={block.data.content}
+                        className="w-full min-h-[100px] text-sm leading-relaxed border-zinc-200 focus:border-zinc-300 rounded-lg p-4 bg-zinc-50/30 editor-input text-zinc-700 placeholder:text-zinc-300"
+                        value={block.data.content || ""}
                         onChange={(e) =>
                           updateBlock(bIdx, {
                             ...block.data,

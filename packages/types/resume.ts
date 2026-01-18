@@ -99,9 +99,15 @@ export const ResumeDataSchema = z.object({
   id: z.string().uuid().default(() => crypto.randomUUID()),
   version: z.number().default(1),
   metadata: z.object({
+    name: z.string().default('My Resume'),
     theme: z.enum(['minimalist', 'professional', 'international']).default('minimalist'),
     region: z.string().default('US'),
     lastModified: z.string().default(() => new Date().toISOString()),
+    images: z.array(z.string()).optional(),
+    icons: z.object({
+      icon: z.string(),
+      apple: z.string(),
+    }).optional(),
   }),
   blocks: z.array(ResumeBlockSchema),
 });
@@ -115,5 +121,6 @@ export type EducationItem = z.infer<typeof EducationItemSchema>;
 export type SkillGroup = z.infer<typeof SkillGroupSchema>;
 export type CertificationItem = z.infer<typeof CertificationItemSchema>;
 export type CustomBlock = z.infer<typeof CustomBlockSchema>;
+export type PersonalDetailItem = z.infer<typeof PersonalDetailItemSchema>;
 export type ResumeBlock = z.infer<typeof ResumeBlockSchema>;
 export type ResumeData = z.infer<typeof ResumeDataSchema>;

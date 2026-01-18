@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fdfcfb;
-  --foreground: #1d1d1f;
+  --background: #ffffff;
+  --foreground: #09090b;
+  --zinc-50: #fafafa;
+  --zinc-100: #f4f4f5;
+  --zinc-200: #e4e4e7;
+  --zinc-300: #d4d4d8;
+  --zinc-400: #a1a1aa;
+  --zinc-500: #71717a;
+  --zinc-600: #52525b;
+  --zinc-700: #3f3f46;
+  --zinc-800: #27272a;
+  --zinc-900: #18181b;
 }
 
 body {
@@ -18,16 +28,45 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-::selection {
-  background: rgba(0, 113, 227, 0.1);
-  color: #0071e3;
-}
-
 @layer base {
   body {
-    background-color: #f8fafc;
-    color: #0f172a;
+    @apply bg-white text-zinc-950;
   }
+}
+
+/* Base Input Styling - Clean & Minimal */
+.editor-input {
+  @apply w-full bg-transparent border-none p-0 focus:ring-0 transition-colors placeholder:text-zinc-300;
+}
+
+.editor-input-title {
+  @apply text-lg font-semibold tracking-tight text-zinc-900;
+}
+
+.editor-input-heading {
+  @apply text-sm font-medium text-zinc-800;
+}
+
+.editor-input-subtext {
+  @apply text-xs text-zinc-500 font-normal;
+}
+
+.editor-label {
+  @apply text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-2 block;
+}
+
+/* Section Cards */
+.editor-section {
+  @apply bg-white rounded-xl border border-zinc-100 p-6 relative hover:border-zinc-200 transition-all;
+}
+
+/* Custom Scrollbar for non-Chrome */
+.custom-scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.custom-scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }
 
 /* Print Overrides */
@@ -37,7 +76,6 @@ body {
     size: A4;
   }
 
-  /* Kill browser headers and footers */
   html,
   body {
     margin: 0 !important;
@@ -53,7 +91,6 @@ body {
     color: #111 !important;
   }
 
-  /* Hide everything marked as no-print */
   .no-print,
   button,
   header,
@@ -63,7 +100,6 @@ body {
     display: none !important;
   }
 
-  /* Ensure the main container doesn't restrict height or add padding */
   main {
     display: block !important;
     margin: 0 !important;
@@ -71,7 +107,6 @@ body {
     width: 210mm !important;
   }
 
-  /* The actual side containing the preview */
   .preview-side {
     display: block !important;
     width: 210mm !important;
@@ -83,7 +118,6 @@ body {
     background: white !important;
   }
 
-  /* The preview target */
   #resume-preview {
     display: block !important;
     transform: none !important;
@@ -95,7 +129,7 @@ body {
     width: 210mm !important;
     min-height: 297mm !important;
     background: white !important;
-    position: static !important; /* Changed from absolute to static for normal page flow */
+    position: static !important;
   }
 
   .resume-container {
@@ -112,13 +146,10 @@ body {
   }
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
-}
-
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -126,13 +157,5 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d2d2d7;
-  border-radius: 10px;
-  border: 4px solid transparent;
-  background-clip: content-box;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #86868b;
-  background-clip: content-box;
+  @apply bg-zinc-200 rounded-full hover:bg-zinc-300 transition-colors;
 }

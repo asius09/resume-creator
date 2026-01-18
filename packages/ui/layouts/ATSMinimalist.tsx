@@ -85,21 +85,23 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
           </h1>
           <div
             className={clsx(
-              "text-[#222]",
+              "text-[#222] bg-red-700",
               "mt-1",
               "leading-snug",
-              "text-center",
+              "text-center w-full mx-auto",
             )}
             style={{ fontSize: "10pt" }}
           >
-            {/* Row 1: Location, Email, Phone */}
             <div
               className={clsx(
                 "flex",
                 "flex-wrap",
                 "justify-center",
                 "items-center",
-                "gap-x-2",
+                "gap-x-1",
+                "gap-y-1",
+                "max-w-full",
+                "mx-auto",
               )}
             >
               {[
@@ -108,9 +110,9 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
                     type: "location",
                     value: headerBlock.data.location,
                   } as HeaderItem),
-                ...(headerBlock.data.contacts as Contact[])
-                  .filter((c) => ["email", "phone"].includes(c.type))
-                  .map((c) => ({ ...c, isContact: true }) as HeaderItem),
+                ...(headerBlock.data.contacts as Contact[]).map(
+                  (c) => ({ ...c, isContact: true }) as HeaderItem,
+                ),
               ]
                 .filter((item): item is HeaderItem => Boolean(item))
                 .map((item, index, array) => (
@@ -125,48 +127,18 @@ export const ATSMinimalist: React.FC<{ data: ResumeData }> = ({ data }) => {
                             "no-underline",
                           )}
                         >
-                          {item.value}
+                          {item.type === "linkedin" ||
+                          item.type === "github" ||
+                          item.type === "website"
+                            ? item.value.replace(/^https?:\/\/(www\.)?/, "")
+                            : item.value}
                         </a>
                       ) : (
                         <span>{item.value}</span>
                       )}
                     </span>
                     {index < array.length - 1 && (
-                      <span className={clsx("mx-2", "text-slate-400")}>|</span>
-                    )}
-                  </div>
-                ))}
-            </div>
-
-            {/* Row 2: Links (LinkedIn, Website, etc.) */}
-            <div
-              className={clsx(
-                "flex",
-                "flex-wrap",
-                "justify-center",
-                "items-center",
-                "gap-x-2",
-                "mt-0.5",
-              )}
-            >
-              {(headerBlock.data.contacts as Contact[])
-                .filter((c) => !["email", "phone"].includes(c.type))
-                .map((item, index, array) => (
-                  <div key={index} className={clsx("flex", "items-center")}>
-                    <span className="whitespace-nowrap">
-                      <a
-                        href={formatContactLink(item)}
-                        className={clsx(
-                          "hover:underline",
-                          "text-inherit",
-                          "no-underline",
-                        )}
-                      >
-                        {item.value.replace(/^https?:\/\/(www\.)?/, "")}
-                      </a>
-                    </span>
-                    {index < array.length - 1 && (
-                      <span className={clsx("mx-2", "text-slate-400")}>|</span>
+                      <span className={clsx("mx-2", "text-zinc-300")}>|</span>
                     )}
                   </div>
                 ))}
