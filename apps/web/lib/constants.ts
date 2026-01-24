@@ -116,8 +116,8 @@ export const INITIAL_DATA: ResumeData = {
       type: "personal",
       data: [
         { label: "Full Name", value: "Adiba Firoz" },
-        { label: "Father's Name", value: "Mr. Firoz" },
-        { label: "Date of Birth", value: "19 December 2001" },
+        { label: "Father's Name", value: "Mohd Firoz" },
+        { label: "Date of Birth", value: "2001-12-19" },
         { label: "Gender", value: "Female" },
         { label: "Marital Status", value: "Unmarried" },
         { label: "Nationality", value: "Indian" },

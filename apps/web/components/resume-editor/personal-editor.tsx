@@ -1,10 +1,17 @@
-import React from "react";
-import { Trash2 } from "lucide-react";
+import { Trash2, Calendar as CalendarIcon } from "lucide-react";
+import { format } from "date-fns";
 import type { PersonalDetailItem } from "@resume/types";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { 
+  Popover, 
+  PopoverTrigger, 
+  PopoverContent 
+} from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 import { EditorAddButton } from "./editor-add-button";
 
 interface PersonalEditorProps {
@@ -104,12 +111,43 @@ export function PersonalEditor({ data, onUpdate }: PersonalEditorProps) {
     }
 
     if (label.includes("date") || label.includes("birth")) {
+      const date = item.value ? new Date(item.value) : undefined;
+
       return (
-        <Input
-          value={item.value || ""}
-          onChange={(e) => updateItem(index, { value: e.target.value })}
-          placeholder="e.g. 19 December 2001"
-        />
+        <div className="space-y-1">
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button
+                variant={"outline"}
+                className={cn(
+                  "w-full justify-start text-left font-normal border-zinc-200 h-10",
+                  !date && "text-muted-foreground"
+                )}
+              >
+                <CalendarIcon className="mr-2 h-4 w-4" />
+                {date && !isNaN(date.getTime()) ? format(date, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={date && !isNaN(date.getTime()) ? date : undefined}
+                onSelect={(newDate) => {
+                  if (newDate) {
+                    updateItem(index, { value: format(newDate, "yyyy-MM-dd") });
+                  }
+                }}
+                initialFocus
+                captionLayout="dropdown"
+                fromYear={1950}
+                toYear={new Date().getFullYear()}
+              />
+            </PopoverContent>
+          </Popover>
+          <div className="px-1">
+             <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-tight">Format: 19 December 2001</span>
+          </div>
+        </div>
       );
     }
 

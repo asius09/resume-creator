@@ -1,3 +1,5 @@
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 import type {
   ResumeData,
   Contact,
@@ -10,6 +12,10 @@ import type {
   CustomBlock,
   PersonalDetailItem,
 } from "@resume/types";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 
 export const handleCopySection = async (data: ResumeData, index: number) => {
   const block = data.blocks[index];

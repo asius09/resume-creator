@@ -15,6 +15,13 @@ interface LanguagesEditorProps {
   onUpdate: (newData: LanguageItem[]) => void;
 }
 
+const COMMON_LANGUAGES = [
+  "English", "Hindi", "Spanish", "French", "German", 
+  "Arabic", "Chinese (Mandarin)", "Japanese", "Korean", "Russian",
+  "Portuguese", "Italian", "Bengali", "Urdu", "Punjabi",
+  "Tamil", "Telugu", "Marathi", "Gujarati", "Kannada"
+].sort();
+
 export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
   const items = data || [];
 
@@ -35,59 +42,93 @@ export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between mb-2">
-        <h3 className="text-sm font-medium text-zinc-500 uppercase tracking-wider">Languages</h3>
-        <span className="text-xs text-zinc-400 hidden sm:inline">{items.length} languages</span>
+        <h3 className="text-sm font-bold text-zinc-900 uppercase tracking-widest">Languages</h3>
+        <span className="text-[10px] font-bold text-zinc-400 uppercase">{items.length} languages</span>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {items.map((item, iIdx) => (
-          <Card
-            key={iIdx}
-            className="group/item border-zinc-200 shadow-sm hover:border-zinc-300 transition-all duration-200 overflow-hidden"
-          >
-            <CardContent className="p-4 space-y-4">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2 flex-1">
-                  <Languages size={14} className="text-zinc-400" />
-                  <Input
-                    className="h-8 font-bold text-xs border-transparent hover:border-zinc-200 focus:border-zinc-900 focus:ring-0 p-0 px-2 transition-all bg-transparent"
-                    value={item.language}
-                    onChange={(e) => updateItem(iIdx, { language: e.target.value })}
-                    placeholder="Language (e.g. English)"
-                  />
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => removeItem(iIdx)}
-                  className="h-7 w-7 text-zinc-300 hover:text-red-500 hover:bg-red-50 sm:opacity-0 sm:group-hover/item:opacity-100 transition-all"
-                >
-                  <Trash2 size={12} />
-                </Button>
-              </div>
+        {items.map((item, iIdx) => {
+          const isCommonLanguage = COMMON_LANGUAGES.includes(item.language) || item.language === "";
+          
+          return (
+            <Card
+              key={iIdx}
+              className="group/item border-zinc-200 shadow-sm hover:border-zinc-300 transition-all duration-200 overflow-hidden"
+            >
+              <CardContent className="p-4 space-y-4">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1 space-y-3">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center gap-2 px-1">
+                        <Languages size={12} className="text-zinc-400" />
+                        <Label className="text-[10px] font-bold uppercase text-zinc-400">Language</Label>
+                      </div>
+                      <Select
+                        className="h-9 text-xs font-medium"
+                        value={isCommonLanguage ? item.language : "other"}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          if (val === "other") {
+                            updateItem(iIdx, { language: " " }); // Space to trigger "Other" mode
+                          } else {
+                            updateItem(iIdx, { language: val });
+                          }
+                        }}
+                      >
+                        <option value="">Select Language</option>
+                        {COMMON_LANGUAGES.map(lang => (
+                          <option key={lang} value={lang}>{lang}</option>
+                        ))}
+                        <option value="other">Other (Type manually)</option>
+                      </Select>
+                    </div>
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 px-1">
-                   <Star size={12} className="text-zinc-400" />
-                   <Label className="text-[10px] font-bold uppercase text-zinc-400">Proficiency</Label>
+                    {(!isCommonLanguage || item.language === " ") && (
+                      <div className="animate-in fade-in slide-in-from-top-1 duration-200">
+                        <Input
+                          className="h-9 text-xs border-zinc-200 focus:border-zinc-900 focus:ring-0 transition-all"
+                          value={item.language === " " ? "" : item.language}
+                          onChange={(e) => updateItem(iIdx, { language: e.target.value })}
+                          placeholder="Type language name..."
+                          autoFocus
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeItem(iIdx)}
+                    className="h-7 w-7 text-zinc-300 hover:text-red-500 hover:bg-red-50 sm:opacity-0 sm:group-hover/item:opacity-100 transition-all mt-1"
+                  >
+                    <Trash2 size={12} />
+                  </Button>
                 </div>
-                <Select
-                  className="h-9 text-xs"
-                  value={item.proficiency}
-                  onChange={(e) =>
-                    updateItem(iIdx, { proficiency: e.target.value })
-                  }
-                >
-                  <option value="Native">Native</option>
-                  <option value="Fluent">Fluent</option>
-                  <option value="Advanced">Advanced</option>
-                  <option value="Intermediate">Intermediate</option>
-                  <option value="Basic">Basic</option>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 px-1">
+                     <Star size={12} className="text-zinc-400" />
+                     <Label className="text-[10px] font-bold uppercase text-zinc-400">Proficiency Level</Label>
+                  </div>
+                  <Select
+                    className="h-9 text-xs"
+                    value={item.proficiency}
+                    onChange={(e) =>
+                      updateItem(iIdx, { proficiency: e.target.value })
+                    }
+                  >
+                    <option value="Native">Native</option>
+                    <option value="Fluent">Fluent</option>
+                    <option value="Advanced">Advanced</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Basic">Basic</option>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       <EditorAddButton
