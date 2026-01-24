@@ -166,20 +166,34 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                        />
                     </div>
 
-                    <div className="flex items-center space-x-2 pt-2">
-                      <input
-                        type="checkbox"
-                        id={`pursuing-${iIdx}`}
-                        checked={item.isPursuing}
-                        onChange={(e) => updateItem(iIdx, { isPursuing: e.target.checked })}
-                        className="w-4 h-4 rounded border-zinc-300 text-zinc-900 focus:ring-zinc-900 transition-all cursor-pointer"
-                      />
-                      <Label 
-                        htmlFor={`pursuing-${iIdx}`} 
-                        className="text-xs font-bold uppercase text-zinc-600 cursor-pointer select-none tracking-tight"
-                      >
-                        Currently Pursuing
-                      </Label>
+                    <div className="space-y-3 pt-2">
+                      <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-400', 'tracking-widest')}>Education Status</Label>
+                      <div className="flex p-1 bg-zinc-100/50 rounded-lg border border-zinc-100">
+                        <button
+                          type="button"
+                          onClick={() => updateItem(iIdx, { isPursuing: false })}
+                          className={cn(
+                            "flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all",
+                            !item.isPursuing 
+                              ? "bg-white text-zinc-900 shadow-sm border border-zinc-200/50" 
+                              : "text-zinc-400 hover:text-zinc-600"
+                          )}
+                        >
+                          Graduated
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => updateItem(iIdx, { isPursuing: true })}
+                          className={cn(
+                            "flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all",
+                            item.isPursuing 
+                              ? "bg-white text-zinc-900 shadow-sm border border-zinc-200/50" 
+                              : "text-zinc-400 hover:text-zinc-600"
+                          )}
+                        >
+                          Pursuing
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -229,7 +229,7 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
                           {edu.gpa && <span className={cn('font-semibold', 'text-zinc-600')}> — GPA: {edu.gpa}</span>}
                         </>
                       }
-                      rightLabel={edu.isPursuing ? `${edu.graduationYear} (Expected)` : edu.graduationYear}
+                      rightLabel={edu.isPursuing ? `${edu.graduationYear} (Pursuing)` : edu.graduationYear}
                     />
                   </div>
                 ))}

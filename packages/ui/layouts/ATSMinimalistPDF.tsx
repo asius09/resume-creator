@@ -333,7 +333,7 @@ export const ATSMinimalistPDF: React.FC<{ data: ResumeData }> = ({ data }) => {
                 <View style={styles.itemHeaderRow}>
                   <Text style={styles.itemTitle}>{edu.degree}</Text>
                   <Text style={styles.itemRightLabel}>
-                    {edu.isPursuing ? `${edu.graduationYear} (Expected)` : edu.graduationYear}
+                    {edu.isPursuing ? `${edu.graduationYear} (Pursuing)` : edu.graduationYear}
                   </Text>
                 </View>
                 <Text style={styles.itemSubtitle}>

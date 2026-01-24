@@ -174,7 +174,7 @@ export const ModernProfessional = forwardRef<HTMLDivElement, { data: ResumeData 
                     </div>
                   </div>
                   <div className="font-bold text-[#444] whitespace-nowrap ml-4">
-                    {item.isPursuing ? `${item.graduationYear} (Expected)` : item.graduationYear}
+                    {item.isPursuing ? `${item.graduationYear} (Pursuing)` : item.graduationYear}
                   </div>
                 </div>
               ))}
