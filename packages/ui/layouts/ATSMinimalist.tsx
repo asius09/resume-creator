@@ -353,8 +353,6 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
           padding: "15mm 20mm",
           boxSizing: "border-box",
           fontFamily: "'Inter', 'Helvetica', 'Arial', sans-serif",
-          backgroundImage: "linear-gradient(to bottom, transparent 296.5mm, #f3f4f6 296.5mm, #f3f4f6 297.5mm, transparent 297.5mm)",
-          backgroundSize: "100% 297.5mm",
         }}
       >
         {data.blocks.map((block, index) => renderBlock(block, index))}

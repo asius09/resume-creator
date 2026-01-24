@@ -53,8 +53,6 @@ export const InternationalFormat = forwardRef<HTMLDivElement, { data: ResumeData
           padding: "20mm",
           boxSizing: "border-box",
           fontFamily: "var(--font-inter), 'Helvetica', Arial, sans-serif",
-          backgroundImage: "linear-gradient(to bottom, transparent 296.5mm, #f3f4f6 296.5mm, #f3f4f6 297.5mm, transparent 297.5mm)",
-          backgroundSize: "100% 297.5mm",
         }}
       >
         {/* 1. Header */}
