@@ -18,85 +18,73 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
   ({ data, activeLayout }, ref) => {
     return (
       <div className={cn(
-        "w-full relative flex flex-col items-center bg-[#121212] min-h-screen",
-        "py-12 md:py-24 px-4 overflow-y-auto no-scrollbar select-none"
+        "w-full relative flex flex-col items-center bg-white min-h-screen",
+        "py-4 md:py-12 px-0 md:px-4 overflow-y-auto custom-scrollbar select-none"
       )}>
-        {/* Advanced Scaling Core */}
+        {/* Absolute Scaling Engine */}
         <style dangerouslySetInnerHTML={{ __html: `
           :root {
-            --a4-width: 210mm;
-            --a4-height: 297mm;
-            --container-padding: 32px;
-            --available-vw: calc(100vw - var(--container-padding));
+            --actual-a4-w: 210mm;
+            --actual-a4-h: 297mm;
+            --view-padding: 32px;
+            --viewport-w: calc(100vw - var(--view-padding));
           }
           @media (min-width: 1024px) {
             :root {
-              --available-vw: calc(50vw - 80px); /* 50% screen minus editor gap */
+              --viewport-w: calc(50vw - 100px); 
             }
           }
-          .paper-scaler {
-            --scale: min(1, calc(var(--available-vw) / var(--a4-width)));
-            transform: scale(var(--scale));
+          .scaling-layer {
+            --scale-factor: min(1, calc(var(--viewport-w) / var(--actual-a4-w)));
+            transform: scale(var(--scale-factor));
             transform-origin: top center;
-            width: var(--a4-width);
+            width: var(--actual-a4-w);
           }
-          .paper-wrapper {
-            width: calc(var(--a4-width) * var(--scale));
-            /* This effectively wraps the scaled content so the parent container knows its actual visible size */
+          .centering-box {
+            width: calc(var(--actual-a4-w) * var(--scale-factor));
+          }
+          @media print {
+            .centering-box { width: 210mm !important; }
+            .scaling-layer { 
+              transform: none !important; 
+              width: 210mm !important;
+            }
           }
         `}} />
 
-        <div className="paper-wrapper">
-          <div className="paper-scaler relative transition-all duration-300 ease-in-out">
-            {/* The Actual A4 Sheet */}
+        <div className="centering-box">
+          <div className="scaling-layer relative transition-all duration-200">
+            {/* The Document Sheet */}
             <div className={cn(
-              "bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.05)]",
-              "relative min-h-[297mm] transition-all duration-500",
-              "before:absolute before:inset-0 before:pointer-events-none before:shadow-[inset_0_0_100px_rgba(0,0,0,0.02)]"
+              "bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08),0_0_0_1px_rgba(0,0,0,0.05)]",
+              "relative min-h-[297mm]"
             )}>
-              {/* Dynamic Content */}
-              <div id="resume-content-root" className="contents">
+              {/* Layout Injection */}
+              <div id="resume-canvas" className="contents">
                 {activeLayout === "minimalist" && <ATSMinimalist data={data} ref={ref} />}
                 {activeLayout === "professional" && <ModernProfessional data={data} ref={ref} />}
                 {activeLayout === "international" && <InternationalFormat data={data} ref={ref} />}
               </div>
 
-              {/* Physical Page Separators */}
+              {/* Precise Page Terminators */}
               <div className="absolute inset-0 pointer-events-none no-print">
-                {[1, 2, 3, 4].map((page) => (
+                {[1, 2, 3, 4].map((p) => (
                   <div 
-                    key={page}
-                    className="absolute w-full flex flex-col items-center"
-                    style={{ top: `${page * 297}mm` }}
+                    key={p}
+                    className="absolute w-full border-t border-dashed border-red-200"
+                    style={{ top: `${p * 297}mm` }}
                   >
-                    {/* Visual Cut Line */}
-                    <div className="w-full border-t-[2px] border-dashed border-zinc-200" />
-                    
-                    {/* Page Label */}
-                    <div className="absolute -translate-y-1/2 right-4 flex items-center gap-2">
-                       <div className="bg-zinc-800 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-xl border border-zinc-700 uppercase tracking-tighter">
-                          Page {page} End
-                       </div>
+                    <div className="absolute right-0 -translate-y-full px-2 py-0.5 bg-white text-red-300 text-[8px] font-bold uppercase tracking-tight">
+                        Page {p} Cut
                     </div>
-
-                    {/* Simulation of a gap (Dark workspace showing through) */}
-                    <div className="w-full h-[15mm] bg-[#121212] opacity-20" />
-                    <div className="w-full border-t-[2px] border-dashed border-zinc-200" />
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Scale-safe bottom padding */}
+            {/* Bottom Padding for Scaled View */}
             <div className="h-40" />
           </div>
-        </div>
-
-        {/* Floating Page Counter (Mobile-optimized) */}
-        <div className="fixed bottom-24 right-6 pointer-events-none flex flex-col items-end gap-2 sm:hidden">
-           <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 shadow-2xl">
-              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Format: A4 Portrait</span>
-           </div>
         </div>
       </div>
     );

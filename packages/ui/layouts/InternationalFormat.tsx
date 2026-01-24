@@ -50,7 +50,7 @@ export const InternationalFormat = forwardRef<HTMLDivElement, { data: ResumeData
         ref={ref}
         className="resume-container w-[210mm] min-h-[297mm] mx-auto bg-white text-[#111] print:p-0 print:m-0 shadow-2xl relative"
         style={{
-          padding: "20mm",
+          padding: "8mm 12mm",
           boxSizing: "border-box",
           fontFamily: "var(--font-inter), 'Helvetica', Arial, sans-serif",
         }}

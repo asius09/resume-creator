@@ -50,7 +50,7 @@ function formatPersonalValue(label: string, value: string): string {
 // --- Internal UI Components ---
 
 const SectionHeader: React.FC<{ title: string }> = ({ title }) => (
-  <div className={cn('mt-5', 'mb-2', 'border-b', 'border-zinc-900', 'pb-0.5', 'first:mt-0')}>
+  <div className={cn('mt-3', 'mb-2', 'border-b', 'border-zinc-900', 'pb-0.5', 'first:mt-0')}>
     <h2
       className={cn('font-bold', 'uppercase', 'tracking-[0.15em]', 'text-zinc-900')}
       style={{ fontSize: "10pt" }}
@@ -111,7 +111,7 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
             <div 
               key={idx} 
               className="w-full flex flex-col items-center"
-              style={{ marginBottom: "1.5rem" }}
+              style={{ marginBottom: "1rem" }}
             >
               <h1
                 className={cn("font-bold uppercase tracking-[0.05em] text-zinc-900")}
@@ -339,18 +339,17 @@ export const ATSMinimalist = forwardRef<HTMLDivElement, { data: ResumeData }>(
           'resume-container', 
           'w-[210mm]', 
           'min-h-[297mm]', 
+          'print:min-h-[297mm]', 
           'mx-auto', 
           'bg-white', 
           'text-zinc-900', 
-          'print:p-0', 
-          'print:m-0', 
           'flex', 
           'flex-col',
           'shadow-2xl',
           'relative'
         )}
         style={{
-          padding: "15mm 20mm",
+          padding: "8mm 12mm",
           boxSizing: "border-box",
           fontFamily: "'Inter', 'Helvetica', 'Arial', sans-serif",
         }}
