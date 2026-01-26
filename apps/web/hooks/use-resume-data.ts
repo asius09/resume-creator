@@ -20,6 +20,7 @@ export function useResumeData() {
   const [resumes, setResumes] = useState<Record<string, ResumeData>>({});
   const [activeId, setActiveId] = useState<string | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   const data = (activeId && resumes[activeId]) || INITIAL_DATA;
 
@@ -89,10 +90,14 @@ export function useResumeData() {
   // Save to LocalStorage whenever resumes or activeId changes
   useEffect(() => {
     if (isMounted) {
+      setIsSaving(true);
       localStorage.setItem(RESUMES_STORAGE_KEY, JSON.stringify(resumes));
       if (activeId) {
         localStorage.setItem(ACTIVE_RESUME_ID_KEY, activeId);
       }
+      // Simulate/ensure UI feedback for saving
+      const timer = setTimeout(() => setIsSaving(false), 500);
+      return () => clearTimeout(timer);
     }
   }, [resumes, activeId, isMounted]);
 
@@ -264,6 +269,7 @@ export function useResumeData() {
     data,
     resumes,
     activeId,
+    isSaving,
     setData,
     isMounted,
     updateBlock,

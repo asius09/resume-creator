@@ -14,6 +14,7 @@ export default function ResumeCleanerPage() {
     data,
     resumes,
     activeId,
+    isSaving,
     isMounted,
     updateBlock,
     addBlock,
@@ -61,6 +62,7 @@ export default function ResumeCleanerPage() {
         onSelectVersion={selectVersion}
         onCreateNewVersion={createNewVersion}
         onDeleteVersion={deleteVersion}
+        isSaving={isSaving}
       />
 
       <main
