@@ -2,7 +2,13 @@ import { Trash2, Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import type { PersonalDetailItem } from "@resume/types";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { 
@@ -60,16 +66,18 @@ export function PersonalEditor({ data, onUpdate }: PersonalEditorProps) {
       return (
         <Select
           value={item.value || ""}
-          onChange={(e) => updateItem(index, { value: e.target.value })}
+          onValueChange={(val) => updateItem(index, { value: val })}
         >
-          <option value="" disabled>
-            Select Gender
-          </option>
-          {GENDER_OPTIONS.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
+          <SelectTrigger className="h-10 border-zinc-200">
+            <SelectValue placeholder="Select Gender" />
+          </SelectTrigger>
+          <SelectContent>
+            {GENDER_OPTIONS.map((opt) => (
+              <SelectItem key={opt} value={opt}>
+                {opt}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
       );
     }
@@ -78,16 +86,18 @@ export function PersonalEditor({ data, onUpdate }: PersonalEditorProps) {
       return (
         <Select
           value={item.value || ""}
-          onChange={(e) => updateItem(index, { value: e.target.value })}
+          onValueChange={(val) => updateItem(index, { value: val })}
         >
-          <option value="" disabled>
-            Select Status
-          </option>
-          {MARITAL_STATUS_OPTIONS.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
+          <SelectTrigger className="h-10 border-zinc-200">
+            <SelectValue placeholder="Select Status" />
+          </SelectTrigger>
+          <SelectContent>
+            {MARITAL_STATUS_OPTIONS.map((opt) => (
+              <SelectItem key={opt} value={opt}>
+                {opt}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
       );
     }
@@ -96,16 +106,18 @@ export function PersonalEditor({ data, onUpdate }: PersonalEditorProps) {
       return (
         <Select
           value={item.value || ""}
-          onChange={(e) => updateItem(index, { value: e.target.value })}
+          onValueChange={(val) => updateItem(index, { value: val })}
         >
-          <option value="" disabled>
-            Select Nationality
-          </option>
-          {NATIONALITY_OPTIONS.map((opt) => (
-            <option key={opt} value={opt}>
-              {opt}
-            </option>
-          ))}
+          <SelectTrigger className="h-10 border-zinc-200">
+            <SelectValue placeholder="Select Nationality" />
+          </SelectTrigger>
+          <SelectContent>
+            {NATIONALITY_OPTIONS.map((opt) => (
+              <SelectItem key={opt} value={opt}>
+                {opt}
+              </SelectItem>
+            ))}
+          </SelectContent>
         </Select>
       );
     }

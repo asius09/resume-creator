@@ -18,7 +18,7 @@ export const ResumePreview = forwardRef<HTMLDivElement, ResumePreviewProps>(
   ({ data, activeLayout }, ref) => {
     return (
       <div className={cn(
-        "w-full relative flex flex-col items-center bg-white min-h-screen",
+        "w-full relative flex flex-col items-center bg-zinc-100/50 min-h-screen",
         "py-4 md:py-12 px-0 md:px-4 overflow-y-auto custom-scrollbar select-none"
       )}>
         {/* Absolute Scaling Engine */}

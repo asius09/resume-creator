@@ -6,7 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { EducationItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
@@ -147,12 +153,17 @@ export function EducationEditor({ data, onUpdate }: EducationEditorProps) {
                     <div className="space-y-2">
                       <Label className={cn('text-[10px]', 'font-bold', 'uppercase', 'text-zinc-500', 'tracking-wider')}>Graduation / Expected Year</Label>
                       <Select 
-                        className="h-11"
                         value={item.graduationYear} 
-                        onChange={(e) => updateItem(iIdx, { graduationYear: e.target.value })}
+                        onValueChange={(val) => updateItem(iIdx, { graduationYear: val })}
                       >
-                        <option value="">Select Year</option>
-                        {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                        <SelectTrigger className="h-11 border-zinc-200">
+                          <SelectValue placeholder="Select Year" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {YEARS.map(y => (
+                            <SelectItem key={y} value={y}>{y}</SelectItem>
+                          ))}
+                        </SelectContent>
                       </Select>
                     </div>
 

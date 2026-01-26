@@ -47,15 +47,12 @@ export function ResumeEditor({
   const mandatory = ["header", "summary", 'mb-12', 'pb-32']
 
   return (
-    <div className={cn('max-w-[720px]', 'mx-auto', 'pb-32', 'space-y-12')}>
-      <div className={cn('flex', 'flex-col', 'gap-6', 'sticky', 'top-0', 'bg-white/80', 'backdrop-blur-md', 'z-10', 'py-3', 'border-b', 'border-zinc-100', 'px-4')}>
+    <div className={cn('max-w-[720px]', 'mx-auto', 'space-y-12')}>
+      <div className={cn('flex', 'flex-col', 'gap-6', 'sticky', 'top-0', 'bg-white/95', 'backdrop-blur-xl', 'z-20', 'border-b', 'border-zinc-100', 'px-8 py-4')}>
         <div>
-          <h2 className={cn('text-xl', 'font-semibold', 'tracking-tight', 'text-zinc-900')}>
-            Resume Editor
+          <h2 className={cn('text-xl', 'font-semibold', 'tracking-tight', 'text-zinc-900', 'uppercase')}>
+            Editor
           </h2>
-          <p className={cn('text-xs', 'text-zinc-500', 'font-medium')}>
-            Build your professional identity.
-          </p>
         </div>
         <div className={cn('flex', 'flex-nowrap', 'overflow-x-auto', 'gap-2', 'pb-2', 'custom-scrollbar', 'scroll-smooth')}>
           {(
@@ -72,12 +69,12 @@ export function ResumeEditor({
               variant="outline"
               size="sm"
               onClick={() => addBlock(type)}
-              className={cn('rounded-full', 'h-8', 'px-4', 'text-[10px]', 'whitespace-nowrap', 'bg-white/50')}
+              className={cn('rounded-full', 'h-8', 'px-4', 'text-[10px]', 'whitespace-nowrap', 'bg-white', 'border-zinc-200', 'hover:bg-zinc-50', 'text-zinc-600', 'font-bold', 'uppercase', 'tracking-wider')}
             >
               <Plus size={12} className="mr-1.5" />{" "}
               {type === "personal"
-                ? "Personal Details"
-                : type.charAt(0).toUpperCase() + type.slice(1)}
+                ? "Personal"
+                : type}
             </Button>
           ))}
         </div>

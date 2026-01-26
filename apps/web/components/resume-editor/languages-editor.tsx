@@ -3,7 +3,13 @@
 import React from "react";
 import { Trash2, Languages, Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -59,10 +65,8 @@ export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
                         <Label className="text-[10px] font-bold uppercase text-zinc-400">Language</Label>
                       </div>
                       <Select
-                        className="h-9 text-xs font-medium"
                         value={isCommonLanguage ? item.language : "other"}
-                        onChange={(e) => {
-                          const val = e.target.value;
+                        onValueChange={(val) => {
                           if (val === "other") {
                             updateItem(iIdx, { language: " " }); // Space to trigger "Other" mode
                           } else {
@@ -70,11 +74,15 @@ export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
                           }
                         }}
                       >
-                        <option value="">Select Language</option>
-                        {COMMON_LANGUAGES.map(lang => (
-                          <option key={lang} value={lang}>{lang}</option>
-                        ))}
-                        <option value="other">Other (Type manually)</option>
+                        <SelectTrigger className="h-9 text-xs font-medium border-zinc-200">
+                          <SelectValue placeholder="Select Language" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {COMMON_LANGUAGES.map(lang => (
+                            <SelectItem key={lang} value={lang}>{lang}</SelectItem>
+                          ))}
+                          <SelectItem value="other">Other (Type manually)</SelectItem>
+                        </SelectContent>
                       </Select>
                     </div>
 
@@ -107,17 +115,21 @@ export function LanguagesEditor({ data, onUpdate }: LanguagesEditorProps) {
                      <Label className="text-[10px] font-bold uppercase text-zinc-400">Proficiency Level</Label>
                   </div>
                   <Select
-                    className="h-9 text-xs"
                     value={item.proficiency}
-                    onChange={(e) =>
-                      updateItem(iIdx, { proficiency: e.target.value })
+                    onValueChange={(val) =>
+                      updateItem(iIdx, { proficiency: val })
                     }
                   >
-                    <option value="Native">Native</option>
-                    <option value="Fluent">Fluent</option>
-                    <option value="Advanced">Advanced</option>
-                    <option value="Intermediate">Intermediate</option>
-                    <option value="Basic">Basic</option>
+                    <SelectTrigger className="h-9 text-xs border-zinc-200">
+                      <SelectValue placeholder="Select Proficiency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Native">Native</SelectItem>
+                      <SelectItem value="Fluent">Fluent</SelectItem>
+                      <SelectItem value="Advanced">Advanced</SelectItem>
+                      <SelectItem value="Intermediate">Intermediate</SelectItem>
+                      <SelectItem value="Basic">Basic</SelectItem>
+                    </SelectContent>
                   </Select>
                 </div>
               </CardContent>

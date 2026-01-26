@@ -5,7 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import type { ExperienceItem } from "@resume/types";
 import { cn } from "@/lib/cn";
 import { EditorAddButton } from "./editor-add-button";
@@ -212,17 +218,29 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                         <div className={cn('grid', 'grid-cols-2', 'gap-2')}>
                           <Select 
                             value={startDate.month} 
-                            onChange={(e) => updateItem(iIdx, { startDate: formatDate(e.target.value, startDate.year) })}
+                            onValueChange={(val) => updateItem(iIdx, { startDate: formatDate(val, startDate.year) })}
                           >
-                            <option value="">Month</option>
-                            {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+                            <SelectTrigger>
+                              <SelectValue placeholder="Month" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {MONTHS.map(m => (
+                                <SelectItem key={m} value={m}>{m}</SelectItem>
+                              ))}
+                            </SelectContent>
                           </Select>
                           <Select 
                             value={startDate.year} 
-                            onChange={(e) => updateItem(iIdx, { startDate: formatDate(startDate.month, e.target.value) })}
+                            onValueChange={(val) => updateItem(iIdx, { startDate: formatDate(startDate.month, val) })}
                           >
-                            <option value="">Year</option>
-                            {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                            <SelectTrigger>
+                              <SelectValue placeholder="Year" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {YEARS.map(y => (
+                                <SelectItem key={y} value={y}>{y}</SelectItem>
+                              ))}
+                            </SelectContent>
                           </Select>
                         </div>
                       </div>
@@ -252,17 +270,29 @@ export function ExperienceEditor({ data, onUpdate }: ExperienceEditorProps) {
                           <div className={cn('grid', 'grid-cols-2', 'gap-2', 'animate-in', 'fade-in', 'duration-200')}>
                              <Select 
                               value={endDate.month} 
-                              onChange={(e) => updateItem(iIdx, { endDate: formatDate(e.target.value, endDate.year) })}
+                              onValueChange={(val) => updateItem(iIdx, { endDate: formatDate(val, endDate.year) })}
                             >
-                              <option value="">Month</option>
-                              {MONTHS.map(m => <option key={m} value={m}>{m}</option>)}
+                              <SelectTrigger>
+                                <SelectValue placeholder="Month" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {MONTHS.map(m => (
+                                  <SelectItem key={m} value={m}>{m}</SelectItem>
+                                ))}
+                              </SelectContent>
                             </Select>
                             <Select 
                               value={endDate.year} 
-                              onChange={(e) => updateItem(iIdx, { endDate: formatDate(endDate.month, e.target.value) })}
+                              onValueChange={(val) => updateItem(iIdx, { endDate: formatDate(endDate.month, val) })}
                             >
-                              <option value="">Year</option>
-                              {YEARS.map(y => <option key={y} value={y}>{y}</option>)}
+                              <SelectTrigger>
+                                <SelectValue placeholder="Year" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {YEARS.map(y => (
+                                  <SelectItem key={y} value={y}>{y}</SelectItem>
+                                ))}
+                              </SelectContent>
                             </Select>
                           </div>
                         )}

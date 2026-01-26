@@ -48,7 +48,7 @@ export default function ResumeCleanerPage() {
   if (!isMounted) return null;
 
   return (
-    <div className={cn("min-h-screen", "bg-white")}>
+    <div className={cn("min-h-screen", "bg-white flex flex-col")}>
       <Header
         resumeName={data.metadata.name || ""}
         onResumeNameChange={setResumeName}
@@ -67,10 +67,7 @@ export default function ResumeCleanerPage() {
 
       <main
         className={cn(
-          "grid",
-          "grid-cols-1",
-          "lg:grid-cols-2",
-          "min-h-[calc(100vh-80px)]",
+          "flex-1 grid grid-cols-1 lg:grid-cols-2 lg:overflow-hidden",
         )}
       >
         {/* Mobile View Toggle */}
@@ -82,23 +79,23 @@ export default function ResumeCleanerPage() {
             "left-1/2",
             "-translate-x-1/2",
             "z-50",
-            "bg-zinc-900/90",
-            "backdrop-blur-md",
+            "bg-zinc-900/95",
+            "backdrop-blur-xl",
             "text-white",
             "rounded-full",
-            "p-1.5",
+            "p-1",
             "shadow-2xl",
             "flex",
             "items-center",
             "border",
-            "border-white/10",
+            "border-white/20",
           )}
         >
           <button
             onClick={() => setMobileView("edit")}
             className={cn(
               "px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
-              mobileView === "edit" ? "bg-white text-black" : "text-white/60",
+              mobileView === "edit" ? "bg-white text-black shadow-lg" : "text-white/60",
             )}
           >
             Edit
@@ -107,7 +104,7 @@ export default function ResumeCleanerPage() {
             onClick={() => setMobileView("preview")}
             className={cn(
               "px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all",
-              mobileView === "preview" ? "bg-white text-black" : "text-white/60",
+              mobileView === "preview" ? "bg-white text-black shadow-lg" : "text-white/60",
             )}
           >
             Preview
@@ -119,24 +116,26 @@ export default function ResumeCleanerPage() {
           className={cn(
             "editor-side no-print transition-all duration-300",
             mobileView === "edit" ? "block" : "hidden lg:block",
-            "bg-[#fafafa]/50 border-r border-zinc-100",
-            "overflow-y-auto max-h-[calc(100vh-80px)] custom-scrollbar",
+            "bg-white border-r border-zinc-200",
+            "lg:overflow-y-auto lg:h-[calc(100vh-80px)] custom-scrollbar relative z-10",
           )}
         >
-          <ResumeEditor
-            data={data}
-            updateBlock={updateBlock}
-            addBlock={addBlock}
-            removeBlock={removeBlock}
-            handleCopySection={(index) => handleCopySection(data, index)}
-          />
+          <div className="max-w-4xl mx-auto">
+            <ResumeEditor
+              data={data}
+              updateBlock={updateBlock}
+              addBlock={addBlock}
+              removeBlock={removeBlock}
+              handleCopySection={(index) => handleCopySection(data, index)}
+            />
+          </div>
         </div>
 
         {/* Preview Side */}
         <div
           className={cn(
-            "preview-container",
-            "bg-zinc-100/30 overflow-y-auto max-h-[calc(100vh-80px)] custom-scrollbar flex justify-center pt-4 lg:pt-8 pb-32",
+            "preview-container transition-all duration-300",
+            "bg-[#f4f4f5] lg:overflow-y-auto lg:h-[calc(100vh-80px)] custom-scrollbar flex justify-center pt-8 pb-32",
             mobileView === "preview" ? "block" : "hidden lg:block",
           )}
         >

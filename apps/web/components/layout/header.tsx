@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface HeaderProps {
   resumeName: string;
@@ -248,36 +249,29 @@ export function Header({
       </div>
 
       <div className={cn("flex", "items-center", "gap-6", "flex-shrink-0")}>
-        <div
-          className={cn(
-            "hidden",
-            "md:flex",
-            "items-center",
-            "bg-zinc-50",
-            "border",
-            "border-zinc-200",
-            "p-1",
-            "rounded-full",
-            "px-2",
-          )}
+        <Tabs
+          value={activeLayout}
+          onValueChange={(v) =>
+            onLayoutChange(
+              v as "minimalist" | "professional" | "international",
+            )
+          }
+          className="hidden md:block"
         >
-          {(["minimalist", "professional", "international"] as const).map(
-            (t) => (
-              <button
-                key={t}
-                onClick={() => onLayoutChange(t)}
-                className={cn(
-                  "px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-full transition-all cursor-pointer",
-                  activeLayout === t
-                    ? "bg-white shadow-sm text-zinc-900 border border-zinc-100"
-                    : "text-zinc-400 hover:text-zinc-600",
-                )}
-              >
-                {t}
-              </button>
-            ),
-          )}
-        </div>
+          <TabsList className="bg-zinc-50 border border-zinc-200 rounded-full h-9 px-1">
+            {(["minimalist", "professional", "international"] as const).map(
+              (t) => (
+                <TabsTrigger
+                  key={t}
+                  value={t}
+                  className="rounded-full px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider data-[state=active]:bg-white data-[state=active]:text-zinc-900 data-[state=active]:shadow-sm transition-all"
+                >
+                  {t}
+                </TabsTrigger>
+              ),
+            )}
+          </TabsList>
+        </Tabs>
 
         <div className={cn("flex", "items-center", "gap-2")}>
           <Button
